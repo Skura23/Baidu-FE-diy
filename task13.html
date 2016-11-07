@@ -5,6 +5,29 @@
 	<title>Document</title>
 </head>
 <body>
-	
+	<label>请输入北京今天空气质量：<input type="text" id="aqi-input"></label>
+	<input type="button" value="确认填写" id="button"></input>
+	<div>您输入的值是：<span id="aqi-display">尚无录入</span></div>
+<script type="text/javascript">
+window.onload = function () {
+	function $(id){
+		return document.getElementById(id);
+	}
+	function getValue () {
+		if ($('aqi-input').value > 999 || $('aqi-input').value <= 0 || isNaN($('aqi-input')))
+			{
+				alert('请输入1-999的数字');
+				return;
+			} 
+		$('aqi-display').innerHTML = $('aqi-input').value;
+	};
+	$('button').onclick = function() {
+		getValue();
+	}
+	$('aqi-input').onkeyup = function (event) {
+		if(event.keyCode == 13){getValue()} ;
+	}
+}
+</script>
 </body>
 </html>
