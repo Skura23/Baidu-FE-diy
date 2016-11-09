@@ -1,0 +1,258 @@
+<!DOCTYPE>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 01</title>
+    <style type="text/css">
+    .aqi-chart-wrap{
+      width: 1200px;
+      height: 450px;
+      position: relative;
+
+    }
+    .graPillar{
+      position: absolute;
+      background: green;
+      margin-left: 1px;
+      width: 10px;
+      bottom: 0;
+    }
+    .week{
+      width: 20px;
+      background: yellow;
+    }
+    .month{
+      width: 30px;
+      background: blue;
+    }
+    </style>
+  </head>
+<body>
+  <fieldset id="form-gra-time">
+    <legend>请选择日期粒度：</legend>
+    <label>日<input name="gra-time" value="day" type="radio" checked="checked"></label>
+    <label>周<input name="gra-time" value="week" type="radio"></label>
+    <label>月<input name="gra-time" value="month" type="radio"></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>请选择查看的城市：</legend>
+    <select id="city-select">
+      
+    </select>
+  </fieldset>
+
+  <div class="aqi-chart-wrap">
+  </div>
+<script type="text/javascript">
+var timeForm = document.getElementById('form-gra-time');
+var citySels = document.getElementById('city-select');
+var chartWrap = document.getElementsByClassName('aqi-chart-wrap')[0];
+var radios = timeForm.getElementsByTagName('input');
+var index1 = index2 = '';
+
+
+/* 数据格式演示
+var aqiSourceData = {
+  "北京": {
+    "2016-01-01": 10,
+    "2016-01-02": 10,
+    "2016-01-03": 10,
+    "2016-01-04": 10
+  }
+};
+*/
+
+// 以下两个函数用于随机模拟生成测试数据
+function getDateStr(dat) {
+  //将获得的随机日期以特定格式表示
+  var y = dat.getFullYear();
+  var m = dat.getMonth() + 1;
+  m = m < 10 ? '0' + m : m;
+  var d = dat.getDate();
+  d = d < 10 ? '0' + d : d;
+  return y + '-' + m + '-' + d;
+}
+function randomBuildData(seed) {
+  //获取92天的随机数据储存在returnDate对象里，键为日期，值为数值，如上注释所示
+  var returnData = {};
+  var dat = new Date("2016-01-01");
+  var datStr = ''
+  for (var i = 1; i < 92; i++) {
+    datStr = getDateStr(dat);
+    returnData[datStr] = Math.ceil(Math.random() * seed);
+    dat.setDate(dat.getDate() + 1);
+  }
+  return returnData;
+}
+
+var aqiSourceData = {
+  "北京": randomBuildData(500),
+  "上海": randomBuildData(300),
+  "广州": randomBuildData(200),
+  "深圳": randomBuildData(100),
+  "成都": randomBuildData(300),
+  "西安": randomBuildData(500),
+  "福州": randomBuildData(100),
+  "厦门": randomBuildData(100),
+  "沈阳": randomBuildData(500)
+};
+
+// 用于渲染图表的数据
+var chartData = {};
+
+// 记录当前页面的表单选项
+var pageState = {
+  nowSelectCity: -1,
+  nowGraTime: "day"
+}
+
+/**
+ * 渲染图表
+ */
+function renderChart() {
+  chartWrap.innerHTML = '';
+  //设置初始左边距
+  var dL = 0;
+  for (var k in chartData){
+    oDiv = document.createElement('div');
+    oDiv.className = 'graPillar'+' '+index1;
+    oDiv.style.height = chartData[k]*0.9+'px';
+    oDiv.style.left = dL + 'px';
+    //柱子设置title属性
+    
+    dL += 11;
+    chartWrap.appendChild(oDiv);
+  }
+}
+
+
+/**
+ * 日、周、月的radio事件点击时的处理函数
+ */
+function graTimeChange() {
+  // 确定是否选项发生了变化 
+  // 获取时间粒度 index1
+  for (var i = 0; i < radios.length; i++) {
+    if (radios[i].checked == true){
+      index1 = radios[i].value;
+    }
+  }
+  // 设置对应数据
+  initAqiChartData();
+
+  // 调用图表渲染函数
+  renderChart();
+}
+
+/**
+ * select发生变化时的处理函数
+ */
+function citySelectChange() {
+  // 确定是否选项发生了变化 
+  // 获取城市索引 index2
+  index2 = citySels.value;
+  // 设置对应数据
+  initAqiChartData();
+  // 调用图表渲染函数
+  renderChart();
+}
+
+/**
+ * 初始化日、周、月的radio事件，当点击时，调用函数graTimeChange
+ */
+function initGraTimeForm() {
+  for (var i = 0; i < radios.length; i++) {
+    if (radios[i].checked == true){
+      index1 = radios[i].value;
+    }
+    radios[i].onclick = function () {
+      graTimeChange();
+    }
+  }
+}
+
+/**
+ * 初始化城市Select下拉选择框中的选项
+ */
+function initCitySelector() {
+  // 读取aqiSourceData中的城市，然后设置id为city-select的下拉列表中的选项
+  for (var k in aqiSourceData) {
+    var option = document.createElement('option');
+    option.innerHTML = k;
+    citySels.appendChild(option);
+  }
+  index2 = citySels.value;
+  // 给select设置事件，当选项发生变化时调用函数citySelectChange
+  citySels.onchange = function () {
+    citySelectChange();
+  }
+}
+
+/**
+ * 初始化图表需要的数据格式
+ */
+//每次time后者city变化都要调用一次
+function initAqiChartData() {
+  // 将原始的源数据处理成图表需要的数据格式
+  chartData = aqiSourceData[index2]; 
+  var sum = 0;
+  var newData = {};
+  var aKeys = Object.keys(chartData);
+  var lens = Object.keys(chartData).length;
+
+  if (index1 == 'day') {
+    newData = chartData;
+  } else if (index1 == 'week') {
+    var week = 0;
+    for (var k = 0; k<lens-1; k+=7) {
+      week++;
+      for (var i = 0; i < 7; i++) {
+        var t = 0;
+        t = k + i;
+        sum = sum + Number(chartData[aKeys[t]]);
+        
+      }
+      newData['第'+week+'周'] = sum/7;
+      sum = 0;
+    }
+    
+  } else {
+    var month = 0;
+    for (var k = 0; k<lens-1; k+=31) {
+      month++;
+      for (var i = 0; i < 31; i++) {
+        //t变量记录数字总长度
+        var t = 0;
+        t = k + i;
+        if(t < lens) {
+          sum = sum + Number(chartData[aKeys[t]]);
+        }
+      }
+      newData['第'+month+'月'] = sum/(t-k);
+      
+      sum = 0;
+    }
+    console.log(newData['第1月']);
+    console.log(newData['第2月']);
+    console.log(newData['第3月']);
+  }
+  // 处理好的数据存到 chartData 中
+  chartData = newData;
+}
+
+/**
+ * 初始化函数
+ */
+function init() {
+  initGraTimeForm()
+  initCitySelector();
+  initAqiChartData();
+}
+
+init();
+renderChart();
+
+</script>
+</body>
+</html>

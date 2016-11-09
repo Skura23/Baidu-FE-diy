@@ -3,6 +3,12 @@
   <head>
     <meta charset="utf-8">
     <title>IFE JavaScript Task 01</title>
+    <style type="text/css">
+    td{
+      display: inline-block;
+      width: 50px;
+    }
+    </style>
   </head>
 <body>
 
@@ -24,7 +30,11 @@
     </tr>
    -->
   </table>
-  <script type="text/javascript">
+<script type="text/javascript">
+//有两种思路：
+//1、局部修改数据，然后更新，但会导致index混乱
+//2、整体修改数据，然后更新，每次修改会刷新index
+
     /**
  * aqiData，存储用户输入的空气指数数据
  * 示例格式：
@@ -35,6 +45,8 @@
  */
 //这里的数据容器是全局变量，方便其它函数对其调用
 var aqiData = {};
+var arr = [];
+var delBtn = [];
 function $ (id) {
   return document.getElementById(id);
 }
@@ -45,6 +57,22 @@ var input2 = $("aqi-value-input");
  * 然后渲染aqi-list列表，增加新增的数据
  */
 function addAqiData() {
+  //替换空格
+  var val1 = input1.value;
+  var val2 = input2.value;
+  val1=val1.replace(/\s/g, "");
+  val2=val2.replace(/\s/g, "");
+  //数据检验
+  var reg1 = /^[a-zA-Z\u4e00-\u9fa5]+$/;
+  var reg2 = /^[-]{0,1}[0-9]{1,}$/;
+  if (!reg1.test(val1)){
+    alert('只限输入中、英文字符');
+    return;
+  }else if (!reg2.test(val2)){
+    alert('只限输入整数');
+    return;
+  }
+  //增加数据
   aqiData[input1.value] = input2.value;
 }
 
@@ -53,10 +81,29 @@ function addAqiData() {
  */
 //render即是将获取的数据渲染成视图
 function renderAqiList() {
-  var oTr = document.createElement('tr');
-  var oTd1 = document.createElement('td');
-  var oTd2 = document.createElement('td');
-  aqiData[aqiData.length - 1]
+//每添加一次，遍历一次btn，更新index 
+arr = Object.keys(aqiData);
+delBtn = document.getElementsByClassName('del-btn'); 
+  $('aqi-table').innerHTML = ''; 
+  for (var i = 0; i < arr.length; i++){
+    var oTr = document.createElement('tr');
+    var oTd1 = document.createElement('td');
+    var oTd2 = document.createElement('td');
+    var oBtn = document.createElement('button');
+    oTd1.innerHTML = arr[i];
+    oTd2.innerHTML = aqiData[arr[i]];
+    oBtn.innerHTML = '删除';
+    oBtn.className = 'del-btn';
+    oTr.appendChild(oTd1);
+    oTr.appendChild(oTd2);
+    oTr.appendChild(oBtn);
+    $('aqi-table').appendChild(oTr);
+    //获取点击的btn的index以执行后续操作。通过call方法传递被点击对象
+    delBtn[i].index = i;
+    delBtn[i].onclick = function(){
+      delBtnHandle.call(this);
+    };
+  }
 }
 
 /**
@@ -74,20 +121,27 @@ function addBtnHandle() {
  */
 function delBtnHandle() {
   // do sth.
-
+  var i = this.index;
+  delete aqiData[arr[i]];
   renderAqiList();
 }
 
 function init() {
 
   // 在这下面给add-btn绑定一个点击事件，点击时触发addBtnHandle函数
-
+  $('add-btn').onclick = function () {
+    addBtnHandle()
+  }
   // 想办法给aqi-table中的所有删除按钮绑定事件，触发delBtnHandle函数
-
+  /*$('del-btn').onclick = function () {
+    delBtnHandle()
+  }*/
+  
 }
 
 init();
 
-  </script>
+</script>
+
 </body>
 </html>
