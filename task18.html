@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+	span{
+		display: block;
+		float: left;
+		margin-left: 3px;
+		background: green;
+		text-align: center;
+		height: 40px;
+		line-height: 40px;
+		padding: 0 10px 0 10px;
+		margin-top: 10px;
+		color: #fff;
+	}
+	</style>
+</head>
+<body>
+<div>
+<input></input>
+<button class="l-in">左侧入</button>
+<button class="l-out">左侧出</button>
+<button class="r-in">右侧入</button>
+<button class="r-out">右侧出</button>
+</div>
+<div class="wrap">
+	
+</div>
+<script type="text/javascript">
+window.onload = function() {
+	//参数不能用class，为冲突字符
+	function $(cla){
+		return document.getElementsByClassName(cla)[0];
+	};
+	var data = [];
+	var inp = document.getElementsByTagName('input')[0];
+	$('l-in').onclick = function () {
+		data.unshift(inp.value);
+		inp.value = '';
+		render();
+
+	};
+
+	$('r-in').onclick = function () {
+		data.unshift(inp.value);
+		inp.value = '';
+		render();
+	};
+	$('r-out').onclick = function () {
+		data.unshift(inp.value);
+		inp.value = '';
+		render();
+	};
+	function render () {
+		$('wrap').innerHTML = '';
+		for (var i = 0; i < data.length; i++) {
+			var oSpan = document.createElement('span');
+			oSpan.innerHTML = data[i];
+			$('wrap').appendChild(oSpan);
+		}
+	}
+}
+</script>
+</body>
+</html>

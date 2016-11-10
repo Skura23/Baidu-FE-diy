@@ -19,7 +19,7 @@
     }
     .week{
       width: 20px;
-      background: yellow;
+      background: red;
     }
     .month{
       width: 30px;
@@ -114,14 +114,20 @@ function renderChart() {
   chartWrap.innerHTML = '';
   //设置初始左边距
   var dL = 0;
+  //使用对象方法增加属性，快速添加数据。此法代替if语句
+  var oneL = {
+    'day':11,
+    'week':21,
+    'month':31
+  };
   for (var k in chartData){
     oDiv = document.createElement('div');
     oDiv.className = 'graPillar'+' '+index1;
     oDiv.style.height = chartData[k]*0.9+'px';
     oDiv.style.left = dL + 'px';
     //柱子设置title属性
-    
-    dL += 11;
+    oDiv.title = k+' '+' '+parseInt(chartData[k]);
+    dL += oneL[index1];
     chartWrap.appendChild(oDiv);
   }
 }
