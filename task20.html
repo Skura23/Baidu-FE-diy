@@ -16,15 +16,25 @@
 		margin-top: 10px;
 		color: #fff;
 	}
+	.s-txt{
+		background: blue;
+		font-weight: normal;
+	}
 	</style>
 </head>
 <body>
-<div>
-<input></input>
-<button class="l-in">左侧入</button>
-<button class="l-out">左侧出</button>
-<button class="r-in">右侧入</button>
-<button class="r-out">右侧出</button>
+<div style="overflow: hidden">
+	<div style="float: left">
+		<textarea style="height: 100px;"></textarea>
+		<button class="l-in">左侧入</button>
+		<button class="l-out">左侧出</button>
+		<button class="r-in">右侧入</button>
+		<button class="r-out">右侧出</button>
+	</div>
+	<div style="float: left; margin-left: 20px; margin-top: 10px;" >
+		<input type="text" class="search-txt"></input>
+		<input type="button" value="查询" class="search-btn"></input>
+	</div>
 </div>
 <div class="wrap">
 	
@@ -36,10 +46,10 @@ window.onload = function() {
 		return document.getElementsByClassName(cla)[0];
 	};
 	var data = [];
-	var inp = document.getElementsByTagName('input')[0];
+	var txt = document.getElementsByTagName('textarea')[0];
 	$('l-in').onclick = function () {
-		data.unshift(inp.value);
-		inp.value = '';
+		data.unshift(txt.value);
+		txt.value = '';
 		render();
 	};
 	$('l-out').onclick = function () {
@@ -47,8 +57,8 @@ window.onload = function() {
 		render();
 	};
 	$('r-in').onclick = function () {
-		data.push(inp.value);
-		inp.value = '';
+		data.push(txt.value);
+		txt.value = '';
 		render();
 	};
 	$('r-out').onclick = function () {
@@ -67,7 +77,24 @@ window.onload = function() {
 				render();
 			}
 			$('wrap').appendChild(oSpan);
+
 		}
+	}
+	//存储原data数据
+	var oldData = [];
+	function searchStr() {
+		oldData = [].concat(data);
+		
+		var sTxt = $('search-txt').value;
+		for (var i = 0; i < data.length; i++) {
+			//原replace方法只能替换第一个，此方法实现全部替换
+			data[i] = data[i].replace(new RegExp(sTxt,'gm'), '<strong class="s-txt">'+sTxt+'</strong>')
+		}
+		render();
+		data = oldData;
+	}
+	$('search-btn').onclick = function () {
+		searchStr();
 	}
 }
 </script>

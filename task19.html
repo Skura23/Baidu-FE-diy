@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+	span{
+		display: block;
+		float: left;
+		margin-left: 3px;
+		background: green;
+		text-align: center;
+		height: 40px;
+		line-height: 40px;
+		padding: 0 10px 0 10px;
+		margin-top: 10px;
+		color: #fff;
+	}
+	.wra{
+		overflow: hidden;
+	}
+	.list,.gra{
+		float: left;
+		width: 500px;
+		height: 200px;
+		
+	}
+	.gra-wra{
+		margin-top: 10px;
+	}
+	.gra{
+		position: relative;
+	}
+	.pillar {
+		margin-left: 1px;
+		width: 19px;
+		position: absolute;
+		bottom: 0;
+		background: green;
+		font-size: 12px;
+		color: #fff;
+		text-align: center;
+	}
+	</style>
+</head>
+<body>
+<div>
+<input></input>
+<button class="l-in">左侧入</button>
+<button class="l-out">左侧出</button>
+<button class="r-in">右侧入</button>
+<button class="r-out">右侧出</button>
+</div>
+<div class="wra">
+	<div class="list"></div>
+	<div class="gra"></div>
+</div>
+
+<div class="gra-wra">
+	<button class="v-btn">可视化</button>
+	<button class="s-btn">排序</button>
+	<button class="back-btn">还原</button>
+</div>
+
+
+<script type="text/javascript">
+window.onload = function() {
+	//参数不能用class，为冲突字符
+	function $(cla){
+		return document.getElementsByClassName(cla)[0];
+	};
+	var data = [];
+	var inp = document.getElementsByTagName('input')[0];
+	$('l-in').onclick = function () {
+		checkNum();
+		if (!inp.value == '') {
+			if (data.length < 60){
+				data.unshift(inp.value);
+				inp.value = '';
+				render();
+			} else {
+				alert('最多输入60个数字');
+			}
+		}
+	};
+	$('l-out').onclick = function () {
+		data.shift();
+		render();
+	};
+	$('r-in').onclick = function () {
+		checkNum();
+		if (!inp.value == '') {
+			if (data.length < 60){
+				data.push(inp.value);
+				inp.value = '';
+				render();
+			} else {
+				alert('最多输入60个数字');
+			}
+		}
+	};
+	$('r-out').onclick = function () {
+		data.pop();
+		render();
+	};
+	var graData = oldData = [];
+	function render () {
+		var index = 0;
+		$('list').innerHTML = '';
+		for (var i = 0; i < data.length; i++) {
+			var oSpan = document.createElement('span');
+			oSpan.index = i;
+			oSpan.innerHTML = data[i];
+			oSpan.onclick = function() {
+				data.splice(this.index, 1);
+				render();
+			}
+			$('list').appendChild(oSpan);
+		}
+		console.log(data);
+		//新建一个数据数组，交给graph部分使用
+		graData = [].concat(data);
+		oldData = [].concat(data)
+	}
+	function checkNum(){
+		var num = inp.value;
+		var regu = /^[-]{0,1}[0-9]{1,}$/;
+		if (!regu.test(num)){
+			alert('请输入整数');
+			inp.value = '';
+			return;
+		}
+		if (num < 10 || num>100){
+			alert('请输入10-100的数字');
+			inp.value = '';
+		}
+	}
+	function visualize() {
+		var disL = 0;
+		$('gra').innerHTML = '';
+		for (var i = 0; i < graData.length; i++) {
+			var oDiv = document.createElement('div');
+			oDiv.className = 'pillar';
+			oDiv.innerHTML = graData[i];
+			oDiv.style.height = graData[i]*2+'px';
+			disL = 20*i;
+			oDiv.style.left = disL + 'px';
+			$('gra').appendChild(oDiv);
+		}
+
+	}
+	
+	function sortList() {
+		
+		graData.sort(function(a, b){
+			return b - a;
+		});
+		visualize()
+	}
+	$('v-btn').onclick = function () {
+		visualize()
+	}
+	$('s-btn').onclick = function () {
+		sortList()
+	}
+	$('back-btn').onclick = function () {
+		graData = [].concat(oldData);
+		visualize()
+	}
+}
+</script>
+</body>
+</html>
