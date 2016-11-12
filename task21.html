@@ -16,17 +16,28 @@
 		margin-top: 10px;
 		color: #fff;
 	}
+	.wrap{
+		width: 500px;
+		height: 120px;
+	}
+	.intre{
+		
+	}
 	</style>
 </head>
 <body>
 <div>
-<input></input>
-<button class="l-in">左侧入</button>
-<button class="l-out">左侧出</button>
-<button class="r-in">右侧入</button>
-<button class="r-out">右侧出</button>
+Tags: </br><input></input>
+<button class="r-in">添加</button>
 </div>
 <div class="wrap">
+	
+</div>
+<div>兴趣爱好：</br>
+	<textarea></textarea>
+	<button style="bottom: 6px; position: relative;" class="intre-btn">添加</button>
+</div>
+<div class="wrap intre">
 	
 </div>
 <script type="text/javascript">
@@ -35,39 +46,84 @@ window.onload = function() {
 	function $(cla){
 		return document.getElementsByClassName(cla)[0];
 	};
-	var data = [];
+	
+	var data1 = [];
+	var data2 = [];
 	var inp = document.getElementsByTagName('input')[0];
-	$('l-in').onclick = function () {
-		data.unshift(inp.value);
-		inp.value = '';
-		render();
+	var txt = document.getElementsByTagName('textarea')[0];
+
+	$('intre-btn').onclick = function () {
+		checkInp(txt, data2);
+	}
+	$('r-in').onclick = function() {
+		checkInp(inp, data1);
+	} 
+	inp.onkeydown = function (e) {
+		var e = e || window.event;
+		if(e.target == inp){
+			if (e.keyCode) {
+				if (e.keyCode == 13 || e.keyCode == 32 || e.keyCode == 188) {
+					checkInp(this, data1);
+				}
+			}
+		}
+	}
+	inp.onkeyup = function (e) {
+		var e = e || window.event;
+		if(e.target == inp){
+			if (e.keyCode) {
+				if (e.keyCode == 13 || e.keyCode == 32 || e.keyCode == 188) {
+					this.value = '';
+				}
+			}
+		}
+	}
+	function checkInp(inpElem, data) {
+
+		//查重
+		for (var i = 0; i < data.length; i++){
+			if (data[i] == inpElem.value){
+				inpElem.value = ''
+			}
+		}
+		//不得输入空值
+		if (inpElem.value == '') return;
+		data.push(inpElem.value);
+		//长度超过10则shift
+		if(data.length > 10) {
+			data.shift();
+		}
+		inpElem.value = '';
+		render(inpElem.parentNode.nextElementSibling, data);
+
 	};
-	$('l-out').onclick = function () {
-		data.shift();
-		render();
-	};
-	$('r-in').onclick = function () {
-		data.push(inp.value);
-		inp.value = '';
-		render();
-	};
-	$('r-out').onclick = function () {
-		data.pop();
-		render();
-	};
-	function render () {
+
+	//参数elem为calss是wrap的显示区域
+	function render (elem, data) {
 		var index = 0;
-		$('wrap').innerHTML = '';
+		elem.innerHTML = '';
 		for (var i = 0; i < data.length; i++) {
 			var oSpan = document.createElement('span');
 			oSpan.index = i;
 			oSpan.innerHTML = data[i];
 			oSpan.onclick = function() {
 				data.splice(this.index, 1);
-				render();
+				render(elem, data);
+			};
+			var oldStr = '';
+			oSpan.onmouseover = function () {
+				oldStr = this.innerHTML;
+				this.innerHTML = "点击删除 " + this.innerHTML;
+				this.style.background = 'red';
+			};
+			oSpan.onmouseout = function () {
+				this.innerHTML = oldStr;
+				this.style.background = 'green';
 			}
-			$('wrap').appendChild(oSpan);
+			elem.appendChild(oSpan);
 		}
+		console.log(data1);
+		console.log(data2);
 	}
 }
 </script>

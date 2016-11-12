@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+	div{
+		border: 1px solid black;
+		float: left;
+		background: white;
+	}
+	.wra{
+		width: 700px;
+		height: 140px;
+	}
+	.layer0{
+		margin: 20px 0 0 20px;
+		width: 320px;
+		height: 100px;
+	}
+	.layer1{
+		margin: 10px 0 0 10px;
+		width: 140px;
+		height: 80px;
+	}
+	.layer2{
+		margin: 10px 0 0 10px;
+		width: 50px;
+		height: 60px;
+	}
+	.colored{
+		background: blue;
+	}
+	</style>
+</head>
+<body>
+<div class="wra">
+	<div class="layer0">
+		<div class="layer1">
+			<div class="layer2"></div>
+			<div class="layer2"></div>
+		</div>
+		<div class="layer1">
+			<div class="layer2"></div>
+			<div class="layer2"></div>
+		</div>
+	</div>
+	<div class="layer0">
+		<div class="layer1">
+			<div class="layer2"></div>
+			<div class="layer2"></div>
+		</div>
+		<div class="layer1">
+			<div class="layer2"></div>
+			<div class="layer2"></div>
+		</div>
+	</div>
+</div>
+	<button style="margin-left: 20px;">显示遍历</button>
+<script type="text/javascript">
+window.onload = function() {
+	var btn = document.getElementsByTagName('button')[0];
+	function $(cla){
+		return document.getElementsByClassName(cla);
+	};
+	var i = k = 0;
+	var elems = [];
+	for (i = 0; i < $('wra').length; i++) {
+		elems.push($('wra')[i]);
+		
+		for(i = 0; i < $('layer0').length; i++){
+			elems.push($('layer0')[i]);
+			
+		};
+	};
+	//setTimeout只是延迟渲染，而不是延迟数据传递
+	
+	t = setInterval(addColor, 500)
+	function addColor(){
+
+		elems[k].className += ' colored';
+		k++;
+	}
+	alert(elems);
+}
+</script>
+</body>
+</html>
