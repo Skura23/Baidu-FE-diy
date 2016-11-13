@@ -56,32 +56,41 @@
 		</div>
 	</div>
 </div>
-	<button style="margin-left: 20px;">显示遍历</button>
+<button style="margin-left: 20px;">显示遍历</button>
 <script type="text/javascript">
 window.onload = function() {
 	var btn = document.getElementsByTagName('button')[0];
+	var aDiv = document.getElementsByTagName('div');
 	function $(cla){
 		return document.getElementsByClassName(cla);
 	};
-	var i = k = 0;
-	var elems = [];
-	for (i = 0; i < $('wra').length; i++) {
-		elems.push($('wra')[i]);
-		
-		for(i = 0; i < $('layer0').length; i++){
-			elems.push($('layer0')[i]);
-			
-		};
-	};
+	var tmp = '';
+	var k = i = 0;
+	btn.onclick = function () {
+		t = setInterval(addColor, 150)
+	}
+
 	//setTimeout只是延迟渲染，而不是延迟数据传递
-	
-	t = setInterval(addColor, 500)
 	function addColor(){
 
-		elems[k].className += ' colored';
+		if(k != 0){
+			aDiv[k-1].className = tmp;
+		}
+		//最后一个div的处理
+		if(k == aDiv.length){
+			clearInterval(t);
+			//在此中断，后面不执行
+			return;
+		}
+		//tmp存储原class名
+		tmp = aDiv[k].className;
+		//或者用for方法先初始化所有div的class名
+		/*for(i = 0; i < aDiv.length; i++){
+			aDiv[i].className = aDiv[i].className。replace(' colored', '');
+		}*/
+		aDiv[k].className += ' colored';
 		k++;
 	}
-	alert(elems);
 }
 </script>
 </body>
