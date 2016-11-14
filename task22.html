@@ -67,7 +67,7 @@ window.onload = function() {
 	var tmp = '';
 	var k = i = 0;
 	btn.onclick = function () {
-		t = setInterval(addColor, 150)
+		if(k == 0) t = setInterval(addColor, 150);
 	}
 
 	//setTimeout只是延迟渲染，而不是延迟数据传递
@@ -80,6 +80,7 @@ window.onload = function() {
 		if(k == aDiv.length){
 			clearInterval(t);
 			//在此中断，后面不执行
+			k = 0;
 			return;
 		}
 		//tmp存储原class名
