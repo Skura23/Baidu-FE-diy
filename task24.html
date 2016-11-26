@@ -9,24 +9,23 @@
 		float: left;
 		background: white;
 		color: black;
+		padding-right: 10px;
+		font-weight: normal;
+		box-sizing: content-box;
 	}
 	.wra{
-		width: 710px;
 		height: 200px;
 	}
 	.layer0{
 		margin: 20px 0 0 20px;
-		width: 320px;
 		height: 170px;
 	}
 	.layer1{
 		margin: 0 0 0 10px;
-		width: 140px;
 		height: 140px;
 	}
 	.layer2{
 		margin: 0 0 0 10px;
-		width: 50px;
 		height: 80px;
 		top: 30px;
 	}
@@ -36,6 +35,12 @@
 	.lighted{
 		background: gray;
 		color: #fff;
+	}
+	.chosen{
+		border: 3px solid black;
+		background: yellow;
+		font-weight: bold;
+
 	}
 	</style>
 </head>
@@ -67,18 +72,25 @@
 	</div>
 </div>
 <button style="margin-left: 20px;">显示遍历</button>
-<input type="text" style="margin-left: 20px;"></input><button>查询</button>
+<input type="text" style="margin-left: 10px;width: 50px;"></input><button>查询</button>
+<input type="text" style="margin-left: 10px;width: 50px;"></input><button>添加</button>
+<button>删除</button>
 <script type="text/javascript">
 window.onload = function() {
 	var btn = document.getElementsByTagName('button')[0];
 	var sBtn = document.getElementsByTagName('button')[1];
+	var addBtn = document.getElementsByTagName('button')[2];
+	var dBtn = document.getElementsByTagName('button')[3];
 	var inp = document.getElementsByTagName('input')[0];
+	var inp1 = document.getElementsByTagName('input')[1];
 	var aDiv = document.getElementsByTagName('div');
 	function $(cla){
 		return document.getElementsByClassName(cla);
 	};
 	var evtTar = null;
+	var t = null;
 	var k = i = len = 0;
+	//存储layer节点的数组
 	var elemArr = $('layer');
 	btn.onclick = function (e) {
 		var e = e || window.event;
@@ -86,19 +98,25 @@ window.onload = function() {
 		evtTar = e.target;
 		elemArr =  $('layer');
 		len = elemArr.length;
-		if(k == 0)t = setInterval(addColor, 150);
+		//初始化定时器t,防止快速点击按钮时出错
+		if(k == 0){
+			if (t) {
+				clearInterval(t);
+				t = setInterval(addColor, 150);
+			}else{
+				t = setInterval(addColor, 150);
+			}
+		}
 	}
 
 	//setTimeout只是延迟渲染，而不是延迟数据传递
 	function addColor(){
 		//清除colored和lighted格式
-		for(i = 0; i < elemArr.length; i++){
-			console.log(elemArr[1]);
-			elemArr[i].className = elemArr[i].className.replace(' colored', '');
-			elemArr[i].className = elemArr[i].className.replace(' lighted', '');
-		}
+		initColor();
 		if(k == len){
+			console.log(t);
 			clearInterval(t);
+			console.log(t);
 			k = 0;
 			if(evtTar == sBtn) {
 				//给被检索到的div增加样式
@@ -110,9 +128,13 @@ window.onload = function() {
 		elemArr[k].className += ' colored';
 		k++;
 	}
-
+	//获取要查找的元素的位置len
 	function searchText(){
 		var tarElem = findParent();
+		if(!tarElem){
+			alert('没有找到对应项');
+			return;
+		}
 		console.log(tarElem);
 		for(i = 0; i < elemArr.length; i++){
 			if(tarElem == elemArr[i]){
@@ -122,9 +144,14 @@ window.onload = function() {
 
 		console.log(elemArr);
 
-		if(k == 0)t = setInterval(addColor, 150);
-		
-		
+		if(k == 0){
+			if (t) {
+				clearInterval(t);
+				t = setInterval(addColor, 150);
+			}else{
+				t = setInterval(addColor, 150);
+			}
+		}
 	}
 	sBtn.onclick = function (e){
 		var e = e || window.event;
@@ -135,6 +162,7 @@ window.onload = function() {
 	function findParent(){
 		for(i = 0; i < aDiv.length; i++){
 			if (inp.value == aDiv[i].textContent) {
+				//用indexOf方法确定是否存在class为layer的元素
 				if (aDiv[i].className.indexOf('layer') < 0){
 					return aDiv[i].parentNode;
 				}else{
@@ -142,6 +170,42 @@ window.onload = function() {
 				}
 			}
 		}
+	}
+	function initColor(){
+		for (i = 0; i < elemArr.length; i++) {
+			elemArr[i].className = elemArr[i].className.replace(' colored', '');
+			elemArr[i].className = elemArr[i].className.replace(' lighted', '');
+			elemArr[i].className = elemArr[i].className.replace(' chosen', '');
+		}
+	}
+	function initChoose(){
+		for ( i = 0; i < elemArr.length; i++) {
+			//如果此处不阻止冒泡，每次向上冒一次泡都会执行一次init，直到冒到最顶
+			//层，导致仅有顶层有class：chosen
+			elemArr[i].onclick = function (e) {
+				e.stopPropagation();
+				initColor();
+				this.className += ' chosen';
+			}
+		}
+	}
+	initChoose();
+	addBtn.onclick = function () {
+		for ( i = 0; i < elemArr.length; i++) {
+			if (elemArr[i].className.indexOf('chosen') >= 0){
+				var chosenElem = elemArr[i];
+			}
+		}
+		var oDiv = document.createElement('div');
+		console.log(chosenElem.className.slice(5, 6));
+		if (parseInt(chosenElem.className.slice(5, 6)) || parseInt(chosenElem.className.slice(5, 6)) == 0){
+			oDiv.className = 'layer' + (parseInt(chosenElem.className.slice(5, 6)) + 1) + ' layer';
+		} else{
+			oDiv.className = 'layer0 layer';
+		}
+		oDiv.innerHTML = inp1.value;
+		chosenElem.appendChild(oDiv);
+		initChoose();
 	}
 }
 </script>

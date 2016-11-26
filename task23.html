@@ -67,7 +67,9 @@
 	</div>
 </div>
 <button style="margin-left: 20px;">显示遍历</button>
-<input type="text" style="margin-left: 20px;"></input><button>查询</button>
+<input type="text" style="margin-left: 10px;width: 50px;"></input><button>查询</button>
+<input type="text" style="margin-left: 10px;width: 50px;"></input><button>添加</button>
+<button>删除</button>
 <script type="text/javascript">
 window.onload = function() {
 	var btn = document.getElementsByTagName('button')[0];
@@ -78,15 +80,25 @@ window.onload = function() {
 		return document.getElementsByClassName(cla);
 	};
 	var evtTar = null;
+	var t = null;
 	var k = i = len = 0;
 	var elemArr = $('layer');
 	btn.onclick = function (e) {
+		
 		var e = e || window.event;
 		//evtTar存储事件对象
 		evtTar = e.target;
 		elemArr =  $('layer');
 		len = elemArr.length;
-		if(k == 0)t = setInterval(addColor, 150);
+		//初始化定时器t,防止快速点击按钮时出错
+		if(k == 0){
+			if (t) {
+				clearInterval(t);
+				t = setInterval(addColor, 150);
+			}else{
+				t = setInterval(addColor, 150);
+			}
+		}
 	}
 
 	//setTimeout只是延迟渲染，而不是延迟数据传递
@@ -98,7 +110,9 @@ window.onload = function() {
 			elemArr[i].className = elemArr[i].className.replace(' lighted', '');
 		}
 		if(k == len){
+			console.log(t);
 			clearInterval(t);
+			console.log(t);
 			k = 0;
 			if(evtTar == sBtn) {
 				//给被检索到的div增加样式
@@ -113,6 +127,10 @@ window.onload = function() {
 
 	function searchText(){
 		var tarElem = findParent();
+		if(!tarElem){
+			alert('没有找到对应项');
+			return;
+		}
 		console.log(tarElem);
 		for(i = 0; i < elemArr.length; i++){
 			if(tarElem == elemArr[i]){
@@ -122,11 +140,17 @@ window.onload = function() {
 
 		console.log(elemArr);
 
-		if(k == 0)t = setInterval(addColor, 150);
-		
-		
+		if(k == 0){
+			if (t) {
+				clearInterval(t);
+				t = setInterval(addColor, 150);
+			}else{
+				t = setInterval(addColor, 150);
+			}
+		}
 	}
 	sBtn.onclick = function (e){
+		
 		var e = e || window.event;
 		evtTar = e.target;
 		searchText();
