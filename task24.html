@@ -173,7 +173,7 @@ window.onload = function() {
 	}
 	function initColor(){
 		for (i = 0; i < elemArr.length; i++) {
-			
+			elemArr[i].className = elemArr[i].className.replace(' colored', '');
 			elemArr[i].className = elemArr[i].className.replace(' lighted', '');
 			elemArr[i].className = elemArr[i].className.replace(' chosen', '');
 		}
