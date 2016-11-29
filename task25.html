@@ -5,43 +5,64 @@
 	<title>Document</title>
 	<style type="text/css">
 	.layer{
-		border: 1px solid black;
-		float: left;
 		background: white;
 		color: black;
 		padding-right: 10px;
 		font-weight: normal;
-		box-sizing: content-box;
-	}
-	.wra{
-		height: 200px;
-	}
-	.layer0{
-		margin: 20px 0 0 20px;
-		height: 170px;
-	}
-	.layer1{
-		margin: 0 0 0 10px;
-		height: 140px;
+		padding: 0 0 0 20px;
 	}
 	.layer2{
-		margin: 0 0 0 10px;
-		height: 80px;
-		top: 30px;
+		padding-left: 30px;
+	}
+	.wra{
+		width: 300px;
+		min-height: 400px;
+		border: 3px solid black;
+		margin-bottom: 10px;
 	}
 	.colored{
 		background: blue;
 	}
 	.lighted{
-		background: gray;
-		color: #fff;
+		font-weight: bold;
+		color: red;
 	}
 	.chosen{
-		border: 3px solid black;
+		
 		background: yellow;
 		font-weight: bold;
 
 	}
+	div{
+		cursor: pointer;
+	}
+	/* css实现右箭头 */
+	.arr-right{
+		width: 0;
+	    height: 0;
+	    border-left: 10px solid #6898c2;
+	    border-top: 5px solid transparent;
+	    border-bottom: 5px solid transparent;
+	    cursor: pointer;
+	}
+	.arrow{
+		width: 0;
+	    height: 0;
+	    cursor: pointer;
+	    margin-right: 10px;
+	    display: inline-block;
+	}
+	.arr-down{
+	    border-top: 10px solid #6898c2;
+	    border-left: 5px solid transparent;
+	    border-right: 5px solid transparent;
+	}
+	.arr-right{
+	    border-top: 5px solid transparent;
+	    border-left: 10px solid #6898c2;
+	    border-bottom: 5px solid transparent;
+	}
+	
 	</style>
 </head>
 <body>
@@ -54,7 +75,7 @@
 		</div>
 		<div class="layer1 layer">
 			<div>Meat</div>
-			<div class="layer2 layer">Beer</div>
+			<div class="layer2 layer">Beef</div>
 			<div class="layer2 layer">Pork</div>
 		</div>
 	</div>
@@ -71,16 +92,16 @@
 		</div>
 	</div>
 </div>
-<button style="margin-left: 20px;">显示遍历</button>
+
 <input type="text" style="margin-left: 10px;width: 50px;"></input><button>查询</button>
 <input type="text" style="margin-left: 10px;width: 50px;"></input><button>添加</button>
 <button>删除</button>
 <script type="text/javascript">
 window.onload = function() {
-	var btn = document.getElementsByTagName('button')[0];
-	var sBtn = document.getElementsByTagName('button')[1];
-	var addBtn = document.getElementsByTagName('button')[2];
-	var dBtn = document.getElementsByTagName('button')[3];
+
+	var sBtn = document.getElementsByTagName('button')[0];
+	var addBtn = document.getElementsByTagName('button')[1];
+	var dBtn = document.getElementsByTagName('button')[2];
 	var inp = document.getElementsByTagName('input')[0];
 	var inp1 = document.getElementsByTagName('input')[1];
 	var aDiv = document.getElementsByTagName('div');
@@ -92,112 +113,112 @@ window.onload = function() {
 	var k = i = len = 0;
 	//存储layer节点的数组
 	var elemArr = $('layer');
-	btn.onclick = function (e) {
-		var e = e || window.event;
-		//evtTar存储事件对象
-		evtTar = e.target;
-		elemArr =  $('layer');
-		len = elemArr.length;
-		//初始化定时器t,防止快速点击按钮时出错
-		if(k == 0){
-			if (t) {
-				clearInterval(t);
-				t = setInterval(addColor, 150);
-			}else{
-				t = setInterval(addColor, 150);
-			}
-		}
-	}
-
-	//setTimeout只是延迟渲染，而不是延迟数据传递
-	function addColor(){
-		//清除colored和lighted格式
-		initColor();
-		if(k == len){
-			console.log(t);
-			clearInterval(t);
-			console.log(t);
-			k = 0;
-			if(evtTar == sBtn) {
-				//给被检索到的div增加样式
-				elemArr[len-1].className += ' lighted';
-			}
-			//在此中断，后面不执行
-			return;
-		}
-		elemArr[k].className += ' colored';
-		k++;
-	}
+	var noChildDivs = [];
+	
 	//获取要查找的元素的位置len
 	function searchText(){
-		var tarElem = findParent();
+		var tarElem = findTar();
 		if(!tarElem){
 			alert('没有找到对应项');
 			return;
 		}
 		console.log(tarElem);
-		for(i = 0; i < elemArr.length; i++){
-			if(tarElem == elemArr[i]){
-				len = i+1;
+		tarElem.className += ' lighted';
+		
+		if (tarElem.className.indexOf('layer2') >= 0) {
+			if(tarElem.parentNode.firstElementChild.firstElementChild.className.indexOf('right')>=0){
+				tarElem.parentNode.firstElementChild.click();
 			}
+			if(tarElem.parentNode.parentNode.firstElementChild.firstElementChild.className.indexOf('right')>=0){
+				tarElem.parentNode.parentNode.firstElementChild.click();
+			}
+			
+			
+		}else if(tarElem.parentNode.className.indexOf('layer1') >= 0 && tarElem.parentNode.parentNode.firstElementChild.firstElementChild.className.indexOf('right')>=0){
+			tarElem.parentNode.parentNode.firstElementChild.click();
 		}
-
 		console.log(elemArr);
 
-		if(k == 0){
-			if (t) {
-				clearInterval(t);
-				t = setInterval(addColor, 150);
-			}else{
-				t = setInterval(addColor, 150);
-			}
-		}
+		
 	}
 	sBtn.onclick = function (e){
 		var e = e || window.event;
 		evtTar = e.target;
 		searchText();
 	}
-	console.log(inp.value);
-	function findParent(){
-		for(i = 0; i < aDiv.length; i++){
-			if (inp.value == aDiv[i].textContent) {
+	function findTar(){
+		for (i = 0; i < noChildDivs.length; i++) {
+			
+			noChildDivs[i].className = noChildDivs[i].className.replace(' lighted', '');
+			
+		}
+		for(i = 0; i < noChildDivs.length; i++){
+			if (inp.value == noChildDivs[i].textContent) {
 				//用indexOf方法确定是否存在class为layer的元素
-				if (aDiv[i].className.indexOf('layer') < 0){
-					return aDiv[i].parentNode;
-				}else{
-					return aDiv[i];
-				}
+					return noChildDivs[i];
+					console.log(noChildDivs[i]);
+				
 			}
 		}
 	}
 	function initColor(){
-		for (i = 0; i < elemArr.length; i++) {
-			elemArr[i].className = elemArr[i].className.replace(' colored', '');
-			elemArr[i].className = elemArr[i].className.replace(' lighted', '');
-			elemArr[i].className = elemArr[i].className.replace(' chosen', '');
+		
+		for(i = 0; i < aDiv.length; i++){
+			aDiv[i].className = aDiv[i].className.replace(' chosen', '');
+			
 		}
 	}
 	//初始化元素被选择的功能
 	function initChoose(){
-		for ( i = 0; i < elemArr.length; i++) {
+		noChildDivs = [];
+		//获取所有没有子div的div
+		for ( i = 0; i < aDiv.length; i++) {
+			if(aDiv[i].children.length == 0 || aDiv[i].firstElementChild.className.indexOf('arrow') >= 0){
+				noChildDivs.push(aDiv[i])
+			}
+		}
+		//添加选定、折叠功能
+		for ( i = 0; i < noChildDivs.length; i++) {
 			//如果此处不阻止冒泡，每次向上冒一次泡都会执行一次init，直到冒到最顶
 			//层，导致仅有顶层有class：chosen
-			elemArr[i].onclick = function (e) {
+			noChildDivs[i].flag = true;
+			noChildDivs[i].onclick = function (e) {
 				e.stopPropagation();
 				initColor();
 				this.className += ' chosen';
+				//最后一层的话，不添加折叠功能
+				if (this.className.indexOf('layer') >= 0){
+					return
+				}
+				this.flag = !this.flag;
+				if (!this.flag) {
+					for ( i = 0; i < this.parentNode.children.length - 1; i++) {
+						this.parentNode.children[i].nextElementSibling.style.display = 'none';
+					}
+					console.log(this.getElementsByClassName('arrow')[0].className);
+					this.getElementsByClassName('arrow')[0].className=this.getElementsByClassName('arrow')[0].className.replace('down', 'right');
+				} else {
+					for ( i = 0; i < this.parentNode.children.length - 1; i++) {
+						this.parentNode.children[i].nextElementSibling.style.display = 'block';
+					}
+					this.getElementsByClassName('arrow')[0].className=this.getElementsByClassName('arrow')[0].className.replace('right', 'down');
+				}
 			}
 		}
 	}
 	initChoose();
 	addBtn.onclick = function () {
+		//如果为空或空格字符串，则退出
+		if (inp1.value.replace(/(^\s*)|(\s*$)/g,"").length == 0) {
+			alert('请输入内容');
+			return
+		}
 		//用来跟踪class为chosen的数量
 		var count = 0;
 		//获取被选中的元素chosenElem
-		for ( i = 0; i < elemArr.length; i++) {
-			if (elemArr[i].className.indexOf('chosen') >= 0){
-				var chosenElem = elemArr[i];
+		for ( i = 0; i < noChildDivs.length; i++) {
+			if (noChildDivs[i].className.indexOf('chosen') >= 0){
+				var chosenElem = noChildDivs[i];
 				count++
 			}
 		}
@@ -207,8 +228,11 @@ window.onload = function() {
 		}
 		var oDiv = document.createElement('div');
 		var iDiv = document.createElement('div');
-		var layerIndex = chosenElem.className.slice(5, 6);
-		console.log(layerIndex);
+		var layerIndex = chosenElem.parentNode.className.slice(5, 6);
+		//判断是否是最后一层
+		if (chosenElem.className.indexOf('layer') >= 0){
+			layerIndex = chosenElem.className.slice(5, 6);
+		}
 		//限制可添加的层数
 		if(layerIndex == 1){
 			oDiv.innerHTML = inp1.value;
@@ -225,17 +249,21 @@ window.onload = function() {
 		} else{
 			oDiv.className = 'layer0 layer';
 		}
-		chosenElem.appendChild(oDiv);
+		chosenElem.parentNode.appendChild(oDiv);
+		//如果添加时是折叠状态则展开
+		if (chosenElem.firstElementChild.className.indexOf('right') >= 0){
+			chosenElem.click();
+		}
 		initChoose();
-
+		
 	}
 	//删除按钮删除节点
 	dBtn.onclick = function () {
 		var count = 0;
 		//获取被选中的元素chosenElem
-		for ( i = 0; i < elemArr.length; i++) {
-			if (elemArr[i].className.indexOf('chosen') >= 0){
-				var chosenElem = elemArr[i];
+		for ( i = 0; i < noChildDivs.length; i++) {
+			if (noChildDivs[i].className.indexOf('chosen') >= 0){
+				var chosenElem = noChildDivs[i];
 				count++
 			}
 		}
@@ -243,8 +271,16 @@ window.onload = function() {
 			alert('请先选中');
 			return
 		}
-		chosenElem.parentNode.removeChild(chosenElem);
+		//判断是否是最后一层
+		if (chosenElem.className.indexOf('layer') >= 0){
+			chosenElem.parentNode.removeChild(chosenElem);
+		} else{
+			chosenElem.parentNode.parentNode.removeChild(chosenElem.parentNode);
+		}
+		
+
 		initChoose();
+		
 	}
 	document.onclick = function (){
 		initColor()
@@ -263,6 +299,21 @@ window.onload = function() {
 				e.stopPropagation();
 			},false);
 		}
+	}
+	//添加折叠指示箭头
+	function initArrow(){	
+	    for ( i = 0; i < noChildDivs.length; i++) {
+	    	if (noChildDivs[i].className.indexOf('layer') < 0){
+				var arrow = document.createElement('span');
+				arrow.className = 'arrow arr-down';
+		    	noChildDivs[i].insertBefore(arrow, noChildDivs[i].firstChild);
+			}	
+	    }
+	}
+	initArrow();
+	function init() {
+		initChoose();
+		initFold()
 	}
 	cancelPop()
 }
