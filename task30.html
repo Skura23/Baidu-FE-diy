@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+	.part input{
+		border: 2px solid gray;
+		border-radius: 4px;
+		padding-left: 3px;
+		outline: none;
+	}
+	.part span{
+		display: block;
+		margin-left: 35px;
+		margin-top: 3px;
+		font-size: 12px;
+		height: 16px;
+		color: gray;
+	}
+	.part span.notok{
+		color: #E10601;
+	}
+	.part input.notok{
+		border-color: #E10601;
+	}
+	.part span.ok{
+		color: #5ba63a;
+	}
+	.part input.ok{
+		border-color: #5ba63a;
+	}
+	.part span.tip{
+		color: gray;
+	}
+	.part input.tip{
+		border-color: gray;
+	}
+	</style>
+</head>
+<body>
+<div class="wra">
+	<div class="part">
+		名称 <input class='inp'></input>
+		<span class='msg'></span>
+	</div>
+	<div class="part">
+		密码 <input class='inp'></input>
+		<span class='msg'></span>
+	</div>
+	<div class="part">
+		密码确认 <input class='inp'></input>
+		<span class='msg'></span>
+	</div>
+	<div class="part">
+		邮箱 <input class='inp'></input>
+		<span class='msg'></span>
+	</div>
+	<div class="part">
+		手机 <input class='inp'></input>
+		<span class='msg'></span>
+	</div>
+</div>
+<script type="text/javascript">
+var oWra = document.getElementsByClassName('wra')[0];
+var oPart = document.getElementsByClassName('part')[0];
+var aSpan = oWra.getElementsByClassName('msg');
+var aInput = oWra.getElementsByClassName('inp');
+var tipMsgs = [
+		'必填，长度为4-16个字符',
+		'必填，长度为6-18个字符',
+		'再次输入相同密码',
+		'必填',
+		'必填，长度为11的数字'
+	];
+var notokMsgs = [
+		'长度不符',
+		'长度不符',
+		'密码不一致',
+		'邮箱格式错误',
+		'手机号码格式错误'
+	];
+var okMsgs = [
+		'名称可用',
+		'密码可用',
+		'密码输入一致',
+		'邮箱格式正确',
+		'手机号码格式正确'
+	];
+
+var CheckFunc = function (input, tipText, notokText, okText){
+	this.oInput = input;
+	this.tipText = tipText;
+	this.notokText = notokText;
+	this.okText = okText;
+	this.initialize();
+}
+CheckFunc.prototype = {
+	constructor: CheckFunc,
+	initialize: function(){
+		for(var i = 0; i < this.oInput.length; i++){
+
+		}
+		var oThis = this;
+		//元素节点位置关系获取oSpan
+		this.oSpan = this.oInput.nextElementSibling;
+		
+		this.oInput.onfocus = function(){
+			oThis.addTip();
+			console.log(oThis.tipText)
+		}
+		this.oInput.onblur = function(){
+			oThis.checkVal()
+		}
+	},
+	addTip: function(){
+		this.initColor();
+		this.oInput.classList.add('tip');
+		this.oSpan.classList.add('tip');
+		this.oSpan.innerHTML = this.tipText;
+	},
+	checkVal: function(){
+		this.initColor();
+		var val = this.oInput.value;
+		if(val.length<4 || val.length>16){
+			this.oInput.classList.add('notok');
+			this.oSpan.classList.add('notok');
+			this.oSpan.textContent = this.notokText;
+		} else {
+			this.oInput.classList.add('ok');
+			this.oSpan.classList.add('ok');
+			this.oSpan.textContent = this.okText;
+		}
+	},
+	initColor: function(){
+		this.oSpan.classList.remove('notok', 'ok', 'tip');
+		this.oInput.classList.remove('notok', 'ok', 'tip');
+	}
+}
+window.onload = function(){
+	/*var obj = new CheckFunc(aInput[0], tipMsgs[0], notokMsgs[0], okMsgs[0]);*/
+	var obj = [];
+	for(var i = 0; i < aInput.length; i++){
+		obj[i] = new CheckFunc(aInput[i], tipMsgs[i], notokMsgs[i], okMsgs[i])
+	}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+	.wra button{
+		margin-left: 10px;
+	}
+	.wra input{
+		border: 2px solid gray;
+		border-radius: 4px;
+		padding-left: 3px;
+	}
+	.wra span{
+		display: block;
+		margin-left: 35px;
+		margin-top: 3px;
+		font-size: 12px;
+		color: gray;
+	}
+	.wra span.notok{
+		color: red;
+	}
+	.wra input.notok{
+		border-color: red;
+	}
+	.wra span.ok{
+		color: #5ba63a;
+	}
+	.wra input.ok{
+		border-color: #5ba63a;
+	}
+	</style>
+</head>
+<body>
+	<div class="wra">
+		名称 <input></input><button>验证</button>
+		<span>必填，长度为4-16个字符</span>
+	</div>
+<script type="text/javascript">
+	window.onload = function(){
+		var oWra = document.getElementsByClassName('wra')[0];
+		var inp = oWra.getElementsByTagName('input')[0];
+		var btn = oWra.getElementsByTagName('button')[0];
+		var tip = oWra.getElementsByTagName('span')[0];
+
+		btn.addEventListener('click', nameTest, false);
+		function nameTest(){
+			var val = inp.value;
+			initClass();
+			if(val == ''){
+				tip.classList.add('notok');
+				inp.classList.add('notok');
+				tip.textContent = '名称不能为空';
+			}else if(val.length<4 || val.length>16){
+				tip.classList.add('notok');
+				inp.classList.add('notok');
+				tip.textContent = '字符长度不符';
+			}else{
+				tip.classList.add('ok');
+				inp.classList.add('ok');
+				tip.textContent = '名称格式正确';
+			}
+		}
+		function initClass (){
+			tip.classList.remove('notok','ok');
+			inp.classList.remove('notok','ok');
+		}
+	}
+</script>
+</body>
+</html>
