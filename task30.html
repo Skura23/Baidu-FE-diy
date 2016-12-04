@@ -36,6 +36,9 @@
 	.part input.tip{
 		border-color: gray;
 	}
+	.subm{
+		margin-left: 30px;
+	}
 	</style>
 </head>
 <body>
@@ -45,12 +48,12 @@
 		<span class='msg'></span>
 	</div>
 	<div class="part">
-		密码 <input class='inp'></input>
+		密码 <input class='inp' type="password"></input>
 		<span class='msg'></span>
 	</div>
 	<div class="part">
-		密码确认 <input class='inp'></input>
-		<span class='msg'></span>
+		密码确认 <input class='inp' type="password"></input>
+		<span class='msg' style="margin-left: 70px"></span>
 	</div>
 	<div class="part">
 		邮箱 <input class='inp'></input>
@@ -60,10 +63,11 @@
 		手机 <input class='inp'></input>
 		<span class='msg'></span>
 	</div>
+	<button class="subm">提交</button>
 </div>
 <script type="text/javascript">
 var oWra = document.getElementsByClassName('wra')[0];
-var oPart = document.getElementsByClassName('part')[0];
+var submBtn = document.getElementsByClassName('subm')[0];
 var aSpan = oWra.getElementsByClassName('msg');
 var aInput = oWra.getElementsByClassName('inp');
 var tipMsgs = [
@@ -94,6 +98,7 @@ var CheckFunc = function (input, tipText, notokText, okText){
 	this.notokText = notokText;
 	this.okText = okText;
 	this.initialize();
+	this.flag = false;
 }
 CheckFunc.prototype = {
 	constructor: CheckFunc,
@@ -107,22 +112,33 @@ CheckFunc.prototype = {
 		
 		this.oInput.onfocus = function(){
 			oThis.addTip();
-			console.log(oThis.tipText)
 		}
 		this.oInput.onblur = function(){
-			oThis.checkVal()
+			oThis.contrastVal()
 		}
 	},
+	//增加tip的函数
 	addTip: function(){
 		this.initColor();
 		this.oInput.classList.add('tip');
 		this.oSpan.classList.add('tip');
 		this.oSpan.innerHTML = this.tipText;
 	},
-	checkVal: function(){
-		this.initColor();
+	//比对input值的函数,因对象而异
+	contrastVal: function(){
 		var val = this.oInput.value;
 		if(val.length<4 || val.length>16){
+			this.flag = true;
+		}else{
+			this.flag = false
+		}
+		this.checkVal(this.flag)
+	},
+	//比对input值的函数,各对象共用
+	checkVal: function(flag){
+		this.initColor();
+		
+		if(flag){
 			this.oInput.classList.add('notok');
 			this.oSpan.classList.add('notok');
 			this.oSpan.textContent = this.notokText;
@@ -132,6 +148,7 @@ CheckFunc.prototype = {
 			this.oSpan.textContent = this.okText;
 		}
 	},
+	//初始化提示颜色
 	initColor: function(){
 		this.oSpan.classList.remove('notok', 'ok', 'tip');
 		this.oInput.classList.remove('notok', 'ok', 'tip');
@@ -142,6 +159,57 @@ window.onload = function(){
 	var obj = [];
 	for(var i = 0; i < aInput.length; i++){
 		obj[i] = new CheckFunc(aInput[i], tipMsgs[i], notokMsgs[i], okMsgs[i])
+	}
+	//分别分配各个对象对应的值检查方法
+	obj[1].contrastVal = function(){
+		var val = this.oInput.value;
+		if(val.length<6 || val.length>16){
+			this.flag = true;
+		}else{
+			this.flag = false
+		}
+		this.checkVal(this.flag)
+	};
+	obj[2].contrastVal = function(){
+		var val = this.oInput.value;
+		if(val != obj[1].oInput.value){
+			this.flag = true;
+		}else{
+			this.flag = false
+		}
+		this.checkVal(this.flag)
+	};
+	//对电子邮件的验证
+	obj[3].contrastVal = function(){
+		var val = this.oInput.value;
+        var myreg =/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+		if(!myreg.test(val)){
+			this.flag = true;
+		}else{
+			this.flag = false
+		}
+		this.checkVal(this.flag)
+	};
+	//对手机号的验证
+	obj[4].contrastVal = function(){
+		var val = this.oInput.value;
+        var myreg = /^[-]{0,1}[0-9]{1,}$/;
+		if(!myreg.test(val) || val.length != 11){
+			this.flag = true;
+		}else{
+			this.flag = false
+		}
+		this.checkVal(this.flag)
+	};
+	submBtn.onclick = function(){
+		//用testloopArr获取flag值，若有true值则报警
+		var testloopArr = [];
+		for(var i = 0; i<obj.length; i++){
+			obj[i].contrastVal();
+			testloopArr.push(obj[i].flag)
+		}
+		console.log(testloopArr)
+		testloopArr.includes(true) && alert('输入有误')
 	}
 }
 </script>
