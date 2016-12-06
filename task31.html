@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+	.wrapper{
+		width: 300px;
+		margin: 30px auto;
+	}
+	.selWra{
+		margin-top: 20px;
+	}
+	</style>
+</head>
+<body>
+<div class="wrapper">
+	<label><input type="radio" name="type">在校生</label>
+	<label><input type="radio" name="type">非在校生</label><br>
+	<div class="selWra">
+		<label class="school">学校
+			<select type="select" name="city"></select>
+			<select type="select" name="school"></select>
+		</label>
+		<label class="workplace">就业单位<input type="text"></label>
+	</div>
+</div>
+<script type="text/javascript">
+window.onload = function(){
+	var data = {
+		'北京': '北京大学',
+		'南京': '东南大学',
+		'马鞍山': '安徽工业大学',
+		'合肥': '中国科技大学'
+	};
+	var schLab = document.getElementsByClassName('school')[0];
+	var workLab = document.getElementsByClassName('workplace')[0];
+	var radios = document.getElementsByName('type');
+	var citySel = schLab.firstElementChild;
+	
+	var schoolSel = schLab.lastElementChild;
+	function initSels (){
+		for(var k in data){
+			var cityOpt = document.createElement('option');
+			var schoolOpt = document.createElement('option');
+			cityOpt.textContent = k;
+			schoolOpt.textContent = data[k];
+			citySel.appendChild(cityOpt);
+			schoolSel.appendChild(schoolOpt);
+		}
+	}
+	function initDisplay(){
+		schLab.style.display = 'none';
+		workLab.style.display = 'none';
+	}
+	initDisplay();
+	initSels();
+	
+	function showSchool (){
+		var val = this.value;
+		var schoolOpts = schoolSel.getElementsByTagName('option');
+		for(var i = 0; i < schoolOpts.length; i++){
+			if (data[val] == schoolOpts[i].value) {
+				schoolOpts[i].selected = true;
+			}
+		}
+	}
+	function hideSel(){
+		initDisplay();
+		if(radios[0].checked){
+			schLab.style.display = 'block';
+		} else if (radios[1].checked){
+			workLab.style.display = 'block';
+		}
+	}
+
+	citySel.onchange = showSchool;
+	function initRadios(){
+		for(var i = 0; i < radios.length; i++){
+			radios[i].onclick = hideSel
+		}
+	}
+	initRadios()
+}
+</script>
+</body>
+</html>
