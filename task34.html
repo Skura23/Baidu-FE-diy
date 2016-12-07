@@ -105,46 +105,124 @@
 function Box (box){
 	this.box = box,
 	this.boxDeg = 0
-}
+};
 Box.prototype = {
 	constructor: Box,
 	degChange: function(type){
+		var boxDeg = {name: 'boxDeg'};
 		if(type == 'left'){
-			this.boxDeg -= 90
+			boxDeg.dis = -90
 		}else if(type == 'right'){
-			this.boxDeg += 90
+			boxDeg.dis = 90
 		} else{
-			this.boxDeg += 180
+			boxDeg.dis = 180
 		}
+		this.doMove(boxDeg);
 	},
 	tlFunc: function(){
 		var type = 'left';
 		this.degChange(type);
-		this.box.style.transform = 'rotate('+ this.boxDeg +'deg)';
 	},
 	trFunc: function(){
 		var type = 'right';
 		this.degChange(type);
-		this.box.style.transform = 'rotate('+ this.boxDeg +'deg)';
 	},
 	tbFunc: function(){
 		var type = 'back';
 		this.degChange(type);
-		this.box.style.transform = 'rotate('+ this.boxDeg +'deg)';
 	},
 	goFunc: function(){
 		var boxDeg = 0;
 		boxDeg = this.boxDeg % 360;
+		//需要兼容性处理
+		var curPos = getComputedStyle(this.box, null);
+		var temPos = {};
+		console.log(curPos.top)
 		if(boxDeg == 0){
-			this.box.style.top = this.box.offsetTop - 40 +'px';
+			temPos.pos = curPos.top;
+			temPos.dire = 'top';
+			temPos.dis = -40;
 		}else if(boxDeg == 90){
-			this.box.style.left = this.box.offsetLeft + 40 +'px';
+			temPos.pos = curPos.left;
+			temPos.dire = 'left';
+			temPos.dis = 40;
 		}else if(boxDeg == 180){
-			this.box.style.top = this.box.offsetTop + 40 +'px';
+			temPos.pos = curPos.top;
+			temPos.dire = 'top';
+			temPos.dis = 40;
 		}else{
-			this.box.style.left = this.box.offsetLeft - 40 +'px';
+			temPos.pos = curPos.left;
+			temPos.dire = 'left';
+			temPos.dis = -40;
 		}
-	}
+		console.log(temPos)
+		this.doMove(temPos);
+	},
+	tranlFunc: function(){
+		var curPos = getComputedStyle(this.box, null);
+		var temPos = {};
+		temPos.pos = curPos.left;
+		temPos.dire = 'left';
+		temPos.dis = -40;
+		this.doMove(temPos)
+	},
+	movlFunc: function(){
+		var curPos = getComputedStyle(this.box, null);
+		var temPos = {};
+		temPos.pos = curPos.left;
+		temPos.dire = 'left';
+		temPos.dis = -40;
+		var boxDeg = {name: 'boxDeg'};
+		boxDeg.dis = -90;
+		this.doMove(boxDeg, temPos)
+	},
+	doMove: function(deg, pos){
+		if (arguments.length == 1){
+			if(arguments[0].dire){
+				var pos = arguments[0];
+				var deg = null;
+			}else if(arguments[0].name == 'boxDeg'){
+				var deg = arguments[0];
+				var pos = null;
+			}
+		}
+		var oThis = this;
+		var flag = false;
+		var t = 0;
+		function animatePos(){
+			console.log(tempPos == parseInt(pos.pos) + pos.dis)
+			tempPos += pos.dis/20;
+
+			oThis.box.style[pos.dire] = tempPos + 'px';
+			
+			/*this.box.style.transform = 'rotate('+ deg/10 +'deg)';*/
+			if (tempPos == parseInt(pos.pos) + pos.dis) {
+				clearInterval(t)
+			}
+		}
+		function animateDeg(){
+			tempDeg += deg.dis/10;
+			oThis.box.style.transform = 'rotate('+ tempDeg +'deg)';
+			if(tempDeg == oThis.boxDeg + deg.dis){
+				clearInterval(p);
+				oThis.boxDeg = tempDeg
+				//结束时检查是否有移动命令，有的话执行
+				if (pos) {
+					t = setInterval(animatePos, 50);
+				}
+			}
+		}
+		if(deg){
+			var tempDeg = this.boxDeg;
+			var p = setInterval(animateDeg, 50);
+			if (pos) {
+				var tempPos = parseInt(pos.pos);
+			}
+		}else if(pos){
+			var tempPos = parseInt(pos.pos);
+			var t = setInterval(animatePos, 50);
+		}
+	}	
 }
 window.onload = function(){
 	var oBox = document.getElementsByClassName('box')[0];
@@ -153,31 +231,19 @@ window.onload = function(){
 	var oInp = oContr.getElementsByTagName('input')[0];
 
 	var obj = new Box(oBox);
+	//commands对象用于储存命令名和对应方法
 	var commands = {
-		'GO': function(){
-			return obj.goFunc
-		},
-		'TL': function(){
-			return obj.tlFunc
-		},
-		'TR': function(){
-			return obj.trFunc
-		},
-		'TB': function(){
-			return obj.tbFunc
-		}
+		'GO': obj.goFunc,
+		'TL': obj.tlFunc,
+		'TR': obj.trFunc,
+		'TB': obj.tbFunc,
+		'TRA LEF': obj.tranlFunc,
+		'MOV LEF': obj.movlFunc
 	}
+	//用call调用obj的，否则方法识别this时会出错
 	oBtn.onclick = function(){
-		if (oInp.value == 'GO'){
-			obj.goFunc()
-		}else if(oInp.value == 'TL'){
-			obj.tlFunc()
-		}else if(oInp.value == 'TR'){
-			obj.trFunc()
-		}else if(oInp.value == 'TB'){
-			obj.tbFunc()
-		}
-	}
+		commands[oInp.value].call(obj)
+	};
 	
 	
 }
