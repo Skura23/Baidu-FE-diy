@@ -63,6 +63,38 @@
 		top: 80px;
 		/* transform: rotate(90deg); */
 	}
+	.cmd-panel{
+		margin-top: 20px;
+	}
+	.panel-nums{
+		display: block;
+		width: 20px;
+		min-height: 101px;
+		background: gray;
+		position: absolute;
+	}
+	.cmd-panel textarea{
+		height: 100px;
+		background: black;
+		color: #fff;
+		line-height: 20px;
+		margin-left: 3px;
+	}
+	.panel-nums span
+	{	
+		display: block;
+		width: 20px;
+		height: 20px;
+		color: black;
+		text-align: center;
+	}
+	.num-wra{
+		width: 20px;
+		height: 101px;
+		overflow: hidden;
+		float: left;
+		position: relative;
+	}
 	</style>
 </head>
 <body>
@@ -98,7 +130,14 @@
 	</div>
 	<div class="controller">
 		<input type="text"></input>
-		<button>执行</button>
+		<button>执行</button><button>清空</button>
+		<div class="cmd-panel">
+			<div class="num-wra">
+				<div class="panel-nums"></div>
+			</div>
+			<textarea></textarea>
+		</div>
+		
 	</div>
 </div>
 <script type="text/javascript">
@@ -119,7 +158,6 @@ Box.prototype = {
 		}else if(cmdDir == 'BAC'){
 			argus.dis  = 2;
 		}
-		argus.name = 'boxDeg';
 		this.degMove(argus);
 	},
 	goFunc: function(){
@@ -193,7 +231,6 @@ Box.prototype = {
 		function animateDeg(){
 			curDeg += argus.dis * 90 / 10;
 			oThis.box.style.transform = 'rotate('+ curDeg +'deg)';
-			console.log(curDeg == startDeg + 90 * argus.dir * argus.times)
 			if(curDeg == startDeg + 90 * argus.dis){
 				clearInterval(t);
 				oThis.boxDeg = curDeg % 360;
@@ -234,12 +271,43 @@ window.onload = function(){
 	var oContr = document.getElementsByClassName('controller')[0];
 	var oBtn = oContr.getElementsByTagName('button')[0];
 	var oInp = oContr.getElementsByTagName('input')[0];
+	var panel = document.getElementsByClassName('cmd-panel')[0];
+	var panelNums = panel.getElementsByClassName('panel-nums')[0];
+	var panelTxt = panel.getElementsByTagName('textarea')[0];
 
 	var obj = new Box(oBox);
 	oBtn.onclick = function(){
 		var command = oInp.value.toUpperCase();
 		obj.cmdHandler(command);
 	};
+
+	panelTxt.onkeyup = function(){
+		var rowData = [];
+		console.log(this.value.split('\n').length);
+		var numLen = this.value.split('\n').length;
+		//获取数组
+		for( var i = 1; i < numLen + 1; i++){
+			rowData.push(i)
+		}
+		//检查命令是否错误
+		checkCmd();
+		//渲染
+		renderNums(rowData)
+		console.log(rowData)
+	}
+	function renderNums (rowData){
+		panelNums.innerHTML = ''
+		for( var i = 0; i < rowData.length; i++){
+			var oSpan = document.createElement('span');
+			oSpan.textContent = rowData[i];
+			panelNums.appendChild(oSpan)
+		}
+	}
+	//确保num指示可随textarea滚动条滚动
+	panelTxt.onscroll = function(){
+		panelNums.style.top = - this.scrollTop + 'px'
+		console.log(this.scrollTop)
+	}
 }
 </script>
 </body>
