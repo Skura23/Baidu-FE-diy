@@ -160,7 +160,7 @@ Box.prototype = {
 		}
 		this.degMove(argus);
 	},
-	goFunc: function(){
+	goFunc: function(cmdTimes){
 		var boxDeg = 0;
 		boxDeg = this.boxDeg % 360;
 		var argus = {};
@@ -177,10 +177,10 @@ Box.prototype = {
 			argus.type = 'left';
 			argus.dir = -1;
 		}
-		argus.times = 1;
+		argus.times = cmdTimes ? cmdTimes : 1;
 		this.posMove(argus);
 	},
-	traFunc: function(cmdDir){
+	traFunc: function(cmdDir, cmdTimes){
 		var argus = {};
 		if (cmdDir == 'LEF') {
 			argus.type = 'left';
@@ -195,10 +195,10 @@ Box.prototype = {
 			argus.type = 'top';
 			argus.dir = 1;
 		}
-		argus.times = 1;
+		argus.times = cmdTimes ? cmdTimes : 1;
 		this.posMove(argus)
 	},
-	movFunc: function(cmdDir){
+	movFunc: function(cmdDir, cmdTimes){
 		var argus = {};
 		if (cmdDir == 'LEF') {
 			argus.dest = 270;
@@ -222,19 +222,20 @@ Box.prototype = {
 		}
 		this.degMove(argus);
 		argus.go = true;
+		argus.times = cmdTimes ? cmdTimes : 1;
 	},
 	degMove: function(argus){
 		var oThis = this;
 		var startDeg = this.boxDeg;
 		var curDeg = startDeg;
-		
 		function animateDeg(){
 			curDeg += argus.dis * 90 / 10;
 			oThis.box.style.transform = 'rotate('+ curDeg +'deg)';
 			if(curDeg == startDeg + 90 * argus.dis){
 				clearInterval(t);
 				oThis.boxDeg = curDeg % 360;
-				argus.go && oThis.goFunc()
+				//如果参数go为true则执行go否则执行下个cmd
+				argus.go ? oThis.goFunc(argus.times) : oThis.begin();
 			}
 		}
 		var t = setInterval(animateDeg, 50)
@@ -249,9 +250,9 @@ Box.prototype = {
 			console.log(curPos == parseInt(argus.pos) + 40 * argus.dir)
 			curPos += (40 * argus.times * argus.dir)/10;
 			oThis.box.style[argus.type] = curPos + 'px';
-			/*this.box.style.transform = 'rotate('+ deg/10 +'deg)';*/
 			if (curPos == startPos + 40 * argus.dir * argus.times) {
-				clearInterval(p)
+				clearInterval(p);
+				oThis.begin();
 			}
 		}
 		var p = setInterval(animatePos, 50)
@@ -261,9 +262,17 @@ Box.prototype = {
 	cmdHandler: function(cmd){
 		var abbrCmd = cmd.slice(0, 3);
 		var cmdDir = cmd.slice(4, 7);
+		var cmdTimes = cmd.slice(8, 9);
+		cmd.indexOf('GO') != -1 && (abbrCmd = cmd.slice(0, 2), cmdTimes = cmd.slice(3, 4));
 		abbrObjCmd = abbrCmd.toLowerCase() + 'Func';
 		console.log(abbrObjCmd);
-		this[abbrObjCmd](cmdDir);
+		abbrObjCmd == 'goFunc' ? this[abbrObjCmd](cmdTimes) : this[abbrObjCmd](cmdDir, cmdTimes);
+	},
+	begin: function(){
+		console.log(this.index)
+		var command = this.cmds[this.index].toUpperCase();
+		this.cmdHandler(command);
+		this.index ++;
 	}
 }
 window.onload = function(){
@@ -271,30 +280,35 @@ window.onload = function(){
 	var oContr = document.getElementsByClassName('controller')[0];
 	var oBtn = oContr.getElementsByTagName('button')[0];
 	var oInp = oContr.getElementsByTagName('input')[0];
+	var clearBtn = oContr.getElementsByTagName('button')[1];
 	var panel = document.getElementsByClassName('cmd-panel')[0];
 	var panelNums = panel.getElementsByClassName('panel-nums')[0];
 	var panelTxt = panel.getElementsByTagName('textarea')[0];
+	var cmdsArr = ['GO', 'TUN LEF', 'TUN RIG', 'TUN BAC', 'TRA LEF', 'TRA TOP', 'TRA RIG', 'TRA BOT', 'MOV LEF', 'MOV TOP', 'MOV RIG', 'MOV BOT']
 
 	var obj = new Box(oBox);
+	//获取textarea的命令集合
+	//通过callback回调函数方法，将对象状态返回给控制台，根据状态触发命令
 	oBtn.onclick = function(){
-		var command = oInp.value.toUpperCase();
-		obj.cmdHandler(command);
+		obj.cmds = panelTxt.value.split('\n');
+		//检查命令是否错误
+		checkCmds()
+		obj.index = 0;
+		obj.begin();
 	};
-
 	panelTxt.onkeyup = function(){
-		var rowData = [];
+		this.rowData = [];
 		console.log(this.value.split('\n').length);
 		var numLen = this.value.split('\n').length;
 		//获取数组
 		for( var i = 1; i < numLen + 1; i++){
-			rowData.push(i)
+			this.rowData.push(i)
 		}
-		//检查命令是否错误
-		checkCmd();
 		//渲染
-		renderNums(rowData)
-		console.log(rowData)
+		renderNums(this.rowData)
+		console.log(this.rowData)
 	}
+	//渲染左侧行数标识
 	function renderNums (rowData){
 		panelNums.innerHTML = ''
 		for( var i = 0; i < rowData.length; i++){
@@ -307,6 +321,15 @@ window.onload = function(){
 	panelTxt.onscroll = function(){
 		panelNums.style.top = - this.scrollTop + 'px'
 		console.log(this.scrollTop)
+	}
+	//清空按钮
+	clearBtn.onclick = function(){
+		panelTxt.value = '';
+		var rowData = [];
+		renderNums(rowData)
+	}
+	function checkCmds (){
+
 	}
 }
 </script>
