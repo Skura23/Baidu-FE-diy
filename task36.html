@@ -8,9 +8,6 @@
 		margin: 0;
 		padding: 0;
 	}
-	button{
-		margin-left: 25px;
-	}
 	.wrapper{
 		overflow: hidden;
 	}
@@ -103,20 +100,6 @@
 	.wrongs{
 		background: red; 
 	}
-	.instructions{
-		border: 1px solid black;
-		position: absolute;
-		width: 500px;
-		right: 50px;
-		top: 80px;
-		padding: 10px
-	}
-	.block{
-		position: absolute;
-		background: gray;
-		width: 39px;
-		height: 39px;
-	}
 	</style>
 </head>
 <body>
@@ -151,33 +134,15 @@
 		</div>
 	</div>
 	<div class="controller">
+		<input type="text"></input>
 		<button>执行</button><button>清空</button>
-		<button>建墙</button>
 		<div class="cmd-panel">
 			<div class="num-wra">
 				<div class="panel-nums"></div>
 			</div>
 			<textarea></textarea>
 		</div>
-	</div>
-	<div class="instructions">
-		在输入框中允许输入如下指令，按下按钮后，使得正方形做相应动作
-		移动不能超出格子空间<br>
-		GO：向蓝色边所面向的方向前进一格（一格等同于正方形的边长<br>
-		TUN LEF：向左转（逆时针旋转90度）<br>
-		TUN RIG：向右转（顺时针旋转90度）<br>
-		TUN BAC：向右转（旋转180度）<br>
-		TRA LEF：向屏幕的左侧移动一格，方向不变<br>
-		TRA TOP：向屏幕的上面移动一格，方向不变<br>
-		TRA RIG：向屏幕的右侧移动一格，方向不变<br>
-		TRA BOT：向屏幕的下面移动一格，方向不变<br>
-		MOV LEF：方向转向屏幕左侧，并向屏幕的左侧移动一格<br>
-		MOV TOP：方向转向屏幕上面，向屏幕的上面移动一格<br>
-		MOV RIG：方向转向屏幕右侧，向屏幕的右侧移动一格<br>
-		MOV BOT：方向转向屏幕下面，向屏幕的下面移动一格<br>
-		GO 3：向当前方向前进三格<br>
-		TRA TOP 2：向屏幕上方平移两格<br>
-		MOV RIG 4：方向转向屏幕右侧，向屏幕的右侧移动四格<br>
+		
 	</div>
 </div>
 <script type="text/javascript">
@@ -325,55 +290,14 @@ Box.prototype = {
 		}else{
 			this.times = times
 		}
-	},
-	//obj的建墙功能
-	buildFunc: function(){
-		var boxDeg = this.boxDeg;
-		var argus = {};
-		var blockPos = [];
-		//可用范围
-		var xRange = [0, 360];
-		var yRange = [0, 360];
-		if(boxDeg == 0){
-			argus.type = 'top';
-			argus.dir = -1;
-		}else if(boxDeg == 90){
-			argus.type = 'left';
-			argus.dir = 1;
-		}else if(boxDeg == 180){
-			argus.type = 'top';
-			argus.dir = 1;
-		}else if(boxDeg == 270){
-			argus.type = 'left';
-			argus.dir = -1;
-		}
-		var curPosX = parseInt(getComputedStyle(this.box, null)['left']);
-		var curPosY = parseInt(getComputedStyle(this.box, null)['top']);
-		if(argus.type == 'left'){
-			blockPos[1] = curPosY;
-			blockPos[0] = curPosX + argus.dir * 40;
-		}else if(argus.type == 'top'){
-			blockPos[1] = curPosY + argus.dir * 40;
-			blockPos[0] = curPosX;
-		}
-		//碰撞处理
-		if(blockPos[0] < xRange[0] || blockPos[0] < yRange[0] || blockPos[1] > xRange[1] || blockPos[1] > yRange[1]){
-			console.log('此处不能建墙');
-			return
-		}
-		var oDiv = document.createElement('div');
-		oDiv.className = 'block';
-		oDiv.style.left = blockPos[0] + 'px';
-		oDiv.style.top = blockPos[1] + 'px';
-		this.box.parentNode.appendChild(oDiv);
 	}
 }
 window.onload = function(){
 	var oBox = document.getElementsByClassName('box')[0];
 	var oContr = document.getElementsByClassName('controller')[0];
 	var oBtn = oContr.getElementsByTagName('button')[0];
+	var oInp = oContr.getElementsByTagName('input')[0];
 	var clearBtn = oContr.getElementsByTagName('button')[1];
-	var buildBtn = oContr.getElementsByTagName('button')[2];
 	var panel = document.getElementsByClassName('cmd-panel')[0];
 	var panelNums = panel.getElementsByClassName('panel-nums')[0];
 	var panelTxt = panel.getElementsByTagName('textarea')[0];
@@ -463,10 +387,12 @@ window.onload = function(){
 			obj.indexs.includes(i) && aSpan[i].classList.add('wrongs');
 		}
 	}
-	buildBtn.onclick = function(){
-		obj.buildFunc()
-	}
 }
 </script>
 </body>
 </html>
+
+aa
+tun lef
+12
+go
