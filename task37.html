@@ -7,6 +7,7 @@
 	*{
 		margin: 0;
 		padding: 0;
+		user-select:none;
 	}
 	.mask{
 		position: fixed;
@@ -26,19 +27,25 @@
 		height: 200px;
 		left: 50%;
 		top: 30%;
-		margin: -100px 0 0 -150px;
+		margin-top: -100px;
+		margin-left: -150px;
 		z-index: 9;
 		background: #fff;
+		cursor: move;
 	}
 	.win-head{
+		user-select:none;
 		line-height: 30px;
 		height: 30px;
 		border-bottom: 3px solid black;
 		text-indent: 5px;
 		background: gray;
 		color: #fff;
+		cursor: move;
 	}
 	.win-body{
+		cursor:text;
+		user-select:text;
 		padding: 5px;
 	}
 	.confirm{
@@ -60,10 +67,14 @@
 	<button>弹出</button>
 	
 	<div class="win">
-		<div class="win-head">
+		<!-- ondragstart事件要设置无效，否则会出错 -->
+		<div class="win-head" ondragstart='return false'>
 			弹窗
 		</div>
-		<div class="win-body">你好</div>
+		<div class="win-body">
+			① 窗口可以拖动；<br>
+			② 点击窗口外关闭<br>
+		</div>
 		<button class="confirm">确认</button>
 		<button class="cancel">取消</button>
 	</div>
@@ -76,8 +87,10 @@ window.onload = function(){
 	var oBtn2 = document.getElementsByClassName('cancel')[0];
 	var mDiv = document.getElementsByClassName('m-div')[0];
 	var oBody = document.getElementsByTagName('body')[0];
+	var wBody = document.getElementsByClassName('win-body')[0];
+	var oHead = document.getElementsByClassName('win-head')[0];
 
-	document.onclick = cancelWin;
+	document.onmousedown = cancelWin;
 	oBtn1.onclick = cancelWin;
 	oBtn2.onclick = cancelWin;
 	oBtn.onclick = function(e){
@@ -85,13 +98,49 @@ window.onload = function(){
 		mDiv.classList.add('mask');
 		oWin.classList.add('dis');
 	}
-	oWin.onclick = function(e){
+	oWin.onmousedown= function(e){
+		//取消冒泡
 		e.stopPropagation();
 	}
-	function cancelWin(){
+	function cancelWin(e){
+		var e = event ? event : window.event;
 		mDiv.classList.remove('mask');
 		oWin.classList.remove('dis');
 	}
+	oHead.onmousedown = function(e){
+		var e = event ? event : window.event;
+		e.stopPropagation();
+		oWin.relPos = [(e.clientX - oWin.offsetLeft), (e.clientY - oWin.offsetTop)];
+		//标记鼠标是否按下
+		oWin.mdown = true;
+	}
+	//注意应为document，若为oHead则只在oHead上起作用
+	document.onmouseup = function(){
+		oWin.mdown = false;
+	}
+	document.onmousemove = function(e){
+		dragWin();
+	}
+	
+	function dragWin(e) {
+		if(!oWin.mdown) return;
+		var lPos = tPos = 0;
+		oWin.style.margin = 0;
+		var e = event ? event : window.event;
+		lPos = e.clientX - oWin.relPos[0];
+		tPos = e.clientY - oWin.relPos[1];
+		
+		var maxL = document.documentElement.clientWidth- oWin.offsetWidth;
+		var maxT = document.documentElement.clientHeight - oWin.offsetHeight;
+		lPos > maxL && (lPos = maxL, tPos = e.clientY - oWin.relPos[1]);
+		lPos < 0 && (lPos = 0);
+		tPos > maxT && (tPos = maxT);
+		tPos < 0 && (tPos = 0);
+
+		oWin.style.left = lPos + 'px';
+		oWin.style.top = tPos + 'px';
+	}
+
 }
 </script>
 </body>
