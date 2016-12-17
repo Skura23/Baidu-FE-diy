@@ -5,72 +5,328 @@
 	<title>Document</title>
 	<style type="text/css">
 	.screen {
-		width: 430px;
-		height: 430px;
+		width: 600px;
+		height: 600px;
 		background: black;
 		position: relative;
+		float: left;
+	}
+	.controller{
+		padding-left: 10px;
+		float: left;
+		width: 400px;
+		height: 600px;
+	}
+	.log{
+		float: left;
+		width: 400px;
+		height: 500px;
+		border:1px solid black;
+		overflow-y: scroll;
+	}
+	.log h3{
+		width: 90px;
+		margin: 0 auto;
+		margin-top: 20px;
+		margin-bottom: 20px;
 	}
 	.earth{
-		width: 180px;
-		height: 180px;
+		width: 100px;
+		height: 100px;
 		border-radius: 50%;    /* 直接变为圆形形状 */
 		background: blue;  
 		position: absolute;
 		left: 50%;
 		top: 50%;
-		margin-left: -90px;
-		margin-top: -90px;
+		margin-left: -50px;
+		margin-top: -50px;
 	}
 	.airship{
+		display: none;
+		font-size: 12px;
+		z-index: 9;
 		position: absolute;
-		top: 60px;
+		top: 50%;
 		left: 50%;
 		margin-left: -23px;
+		/* 初始位置在第一轨道 */
+		margin-top: -109px;
 		width:40px;
 		height: 20px;
 		line-height: 20px;
 		text-align: center;
-		background: red;
+		background: #fff;
 		border-radius: 5px;
-		border-right: 6px solid #fff;
+		border-right: 7px solid gray;
 	}
-	.move{
-		animation: myOrbit 4s linear infinite;
+	.powerbar{
+		position: absolute;
+		width:40px;
+		height: 20px;
+		top: 0px;
+		background: #99CC00;
+		border-top-left-radius: 5px;
+		border-bottom-left-radius: 5px;
+		z-index: -1;
 	}
-	@keyframes myOrbit {
-		from { transform: rotate(0deg) translateX(20px) rotate(0deg); }
-    	to{ transform: rotate(360deg) translateX(20px) rotate(-360deg); }
+	.cir{
+		border-radius: 50%;    /* 直接变为圆形形状 */
+ 		border: 2px solid #fff;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+	}
+	.line1{
+		width: 200px;
+		height: 200px;
+		margin-left: -100px;
+		margin-top: -100px;
+	}
+	.line2{
+		width: 300px;
+		height: 300px;
+		margin-left: -150px;
+		margin-top: -150px;
+	}
+	.line3{
+		width: 400px;
+		height: 400px;
+		margin-left: -200px;
+		margin-top: -200px;
+	}
+	.line4{
+		width: 500px;
+		height: 500px;
+		margin-left: -250px;
+		margin-top: -250px;
+	}
+	.screen .start1{
+		margin-top: -9px;
+		animation: roArgus1 4s linear infinite;
+	}
+	.screen .start2{
+		margin-top: -9px;
+		animation: roArgus2 6s linear infinite;
+	}
+	.screen .start3{
+		margin-top: -9px;
+		animation: roArgus3 8s linear infinite;
+	}
+	.screen .start4{
+		margin-top: -9px;
+		animation: roArgus4 10s linear infinite;
+	}
+	.screen .stop{
+		animation-play-state:paused;
+	}
+	.screen .restart{
+		animation-play-state:running;
+	}
+
+	/* 对不同飞船的不同运行参数 */
+	@keyframes roArgus1 {
+		from { transform: rotate(0deg) translateY(-100px); }
+    	to{ transform: rotate(360deg) translateY(-100px); }
+	}
+	@keyframes roArgus2 {
+		from { transform: rotate(0deg) translateY(-150px); }
+    	to{ transform: rotate(360deg) translateY(-150px); }
+	}
+	@keyframes roArgus3 {
+		from { transform: rotate(0deg) translateY(-200px); }
+    	to{ transform: rotate(360deg) translateY(-200px); }
+	}
+	@keyframes roArgus4 {
+		from { transform: rotate(0deg) translateY(-250px); }
+    	to{ transform: rotate(360deg) translateY(-250px); }
+	}
+	.ship2{
+		margin-top: -159px;
+	}
+	.ship3{
+		margin-top: -209px;
+	}
+	.ship4{
+		margin-top: -259px;
 	}
 	</style>
 </head>
 <body>
 <div class="screen">
-	<div class="earth">
-		
-	</div>
-	<div class="airship">
-		
-	</div>
+	<div class="earth"></div>
+	<div class="cir line1"></div>
+	<div class="cir line2"></div>
+	<div class="cir line3"></div>
+	<div class="cir line4"></div>
 </div>
-<div class="control">
-	<button class="start">开始飞行</button>
-	<button class="stop">停止飞行</button>
+<div class="controller">
+	<div class="log">
+		<h3>控制日志</h3>
+	</div>
+	<div class="btn-zone btn1">
+	轨道1
+		<button>生成</button>
+		<button>起飞</button>
+		<button>停止</button>
+		<button>摧毁</button>
+	</div>
+	<div class="btn-zone btn2">
+	轨道2
+		<button>生成</button>
+		<button>起飞</button>
+		<button>停止</button>
+		<button>摧毁</button>
+	</div>
+	<div class="btn-zone btn3">
+	轨道3
+		<button>生成</button>
+		<button>起飞</button>
+		<button>停止</button>
+		<button>摧毁</button>
+	</div>
+	<div class="btn-zone btn4">
+	轨道4
+		<button>生成</button>
+		<button>起飞</button>
+		<button>停止</button>
+		<button>摧毁</button>
+	</div>
 </div>
 <script type="text/javascript">
+//设计Airship为飞船构造器
+function Airship(){
+	this.t=[];
+	this.ships = [];
+}
+Airship.prototype = {
+	initialize: function(id){
+		var oScreen = document.getElementsByClassName('screen')[0];
+		var oDiv = document.createElement('div');
+		var innerDiv = document.createElement('div');
+		oDiv.innerHTML = '100%';
+		oDiv.appendChild(innerDiv);
+		//增加能量条
+		innerDiv.className = 'powerbar';
+		oDiv.className = 'airship ship' + id;
+		oScreen.appendChild(oDiv);
+		console.log(innerDiv)
+	},
+	cmdHandler: function(cmd){
+		console.log(cmd.name)
+		var ship = document.getElementsByClassName('ship'+cmd.id)[0];
+		//已生成再点生成则返回
+		if(ship && cmd.name == 'create'){return};
+		//点击的ship未生成则返回，已生成则赋值
+		if(!ship && cmd.name != 'create') {return};
+		
+		if(cmd.name == 'create'){
+			this.initialize(cmd.id);
+			this.ship= document.getElementsByClassName('ship'+cmd.id)[0];
+			this.ship.power = 100;
+			this.ship.style.display = 'block';
+			this.ships[cmd.id] = this.ship;
+			console.log(this.ships[1])
+			this.logHandler(cmd.name)
+		}else if(cmd.name == 'start'){
+			var cla = cmd.name+cmd.id;
+			this.ships[cmd.id].className.indexOf(cmd.name) >= 0 ? (this.ships[cmd.id].classList.add('restart')) : this.ships[cmd.id].classList.add(cla);
+			this.started = true;
+			this.powerHandler(this.started, cmd.id);
+		}else if(cmd.name == 'stop'){
+			this.ships[cmd.id].classList.remove('restart');
+			this.ships[cmd.id].classList.add('stop');
+			this.started = false;
+			this.powerHandler(this.started, cmd.id);
+		//destroy删除节点
+		}else if(cmd.name == 'destroy'){
+			var thisNode = document.getElementsByClassName('ship'+cmd.id)[0];
+			thisNode.parentNode.removeChild(thisNode)
+		}
+
+		console.log(this.ship)
+		this.logHandler(cmd);
+	},
+	powerHandler: function(started, id){
+		var oThis = this;
+		clearInterval(this.t[id])
+		//设定t为this的，否则上面的clear无法使用
+		this.t[id] = setInterval(function(){
+			if(started){
+				//use power
+				oThis.ships[id].power += 2;
+				oThis.ships[id].power -= 5;
+			}else if(!started){
+				//add power
+				oThis.ships[id].power += 2;
+			}
+			console.log(started)
+			
+			if (oThis.ships[id].power <= 0){
+				oThis.ships[id].power = 0;
+				var cmd = {};
+				cmd.name = 'stop';
+				cmd.id = id;
+				oThis.cmdHandler(cmd);
+				console.log(cmd.name)
+			} else if(oThis.ships[id].power >= 100){
+				oThis.ships[id].power = 100;
+				clearInterval(oThis.t[id]);
+			}
+			oThis.ships[id].firstChild.nodeValue = oThis.ships[id].power + '%';
+			oThis.powerRender(id);
+		}, 500)
+	},
+	//能量条动画渲染
+	powerRender: function(id){
+		var barWidth = 40;
+		this.ships[id].getElementsByClassName('powerbar')[0].style.width = barWidth*(this.ships[id].power)/100 + 'px';
+		console.log(this.ship.getElementsByClassName('powerbar')[0])
+	},
+	logHandler: function(){
+
+	}
+}
 window.onload = function (){
 	function $(cla){
 		return document.getElementsByClassName(cla);
 	}
+	/*要放在前面否则选择器无法获取oAirship*/
+	var ship = new Airship();
 	var oScreen = $('screen')[0];
 	var oEarth = $('earth')[0];
 	var oAirship = $('airship')[0];
-	var oController = $('control')[0];
-	var oStartBtn = $('start')[0];
-	var oStopBtn = $('stop')[0];
-	
-	oStartBtn.onclick = function () {
-		oAirship.classList.add('move')
+	var oController = $('controller')[0];
+	var aBtnZone = $('btn-zone');
+	var cmdName = ['create','start','stop','destroy'];
+
+	//为命令按钮增加属性供对象的命令处理函数使用
+	for(var i = 0; i < aBtnZone.length; i++){
+		var aBtn = aBtnZone[i].getElementsByTagName('button');
+		for(var p = 0; p < aBtn.length; p++){
+			aBtn[p].id = i +1;
+			aBtn[p].name = cmdName[p];
+			aBtn[p].onclick = function(){
+				ship.cmdHandler(this);
+			}
+		}
 	}
+	console.log(aBtnZone[3].getElementsByTagName('button')[2].name)
+	/*oStartBtn.onclick = function () {
+		this.name = 'start';
+		ship1.cmdHandler(this);
+	}
+	oStopBtn.onclick = function () {
+		this.name = 'stop';
+		ship1.cmdHandler(this);
+	}
+	oCreateBtn.onclick = function(){
+		this.name = 'create';
+		ship1.cmdHandler(this);
+	}
+	oDestroyBtn.onclick = function(){
+		this.name = 'destroy';
+		ship1.cmdHandler(this);
+	}*/
 }
 </script>
 </body>
