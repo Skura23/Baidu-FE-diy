@@ -102,7 +102,7 @@ header{
 	text-indent: 10px;
 	background: #FAFAEE;
 }
-.rig-bar div{
+.cont-dis div{
 	position: absolute;
 	margin-top: 98px;
 	width: 100%;
@@ -113,12 +113,30 @@ header{
 .lef-bar p{
 	padding: 15px 0 0 15px;
 }
-.lef-bar ul{
+.lef-bar>ul{
 	margin: 10px 0 0 0;
 }
 .lef-bar ul li{
+	
+}
+.lef-bar ul li span{
 	padding-left: 15px;
+	width: 234px;
+	display: block;
+	height: 25px;
+	line-height: 25px;
+	cursor: pointer;
 }
 .lef-bar ul li img{
 	margin-right: 8px;
+}
+.lef-bar .file{
+	padding-left: 30px;
+	width: 219px;
+}
+.lighted{
+	background: #fff;
+}
+.not-show{
+	display: none;
 }
