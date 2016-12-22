@@ -27,6 +27,7 @@ header{
 	bottom: 0;
 	background: white;
 	min-width: 1000px;
+	min-height: 490px;
 }
 .lef-bar, .mid-bar{
 	position: relative;
@@ -93,19 +94,21 @@ header{
 	height: 48px;
 	line-height: 48px;
 	border-bottom: 1px solid #D5D5D5;
-	text-indent: 10px;
+	text-indent: 15px;
 }
 .rig-bar p{
 	height: 48px;
 	line-height: 48px;
 	border-bottom: 1px solid #D5D5D5;
-	text-indent: 10px;
+	text-indent: 15px;
 	background: #FAFAEE;
 }
 .cont-dis div{
 	position: absolute;
 	margin-top: 98px;
 	width: 100%;
+	text-indent: 15px;
+	padding-top: 15px;
 	top: 0;
 	bottom: 0;
 	background: #fff;
@@ -139,4 +142,49 @@ header{
 }
 .not-show{
 	display: none;
+}
+.cont-edit{
+	padding-left: 15px;
+}
+.cont-edit input{
+	width: 400px;
+
+}
+.cont-edit textarea{
+	width: 400px;
+	height: 200px;
+}
+.cont-edit button{
+	margin-left: 60px;
+	width: 60px;
+	height: 30px;
+	line-height: 30px;
+}
+.cont-edit label:nth-child(10){
+	position: relative;
+	top: -190px;
+}
+.center-bar{
+	width: 100%;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	margin-top: 41px;
+	margin-bottom: 41px;
+	overflow-y: scroll;
+}
+.dates{
+	background: #FAFAEE;
+	height: 30px;
+	line-height: 30px;
+	padding-left: 10px;
+}
+.titles{
+	background: #fff;
+	height: 30px;
+	line-height: 30px;
+	padding-left: 20px;
+}
+.chosen{
+	background: #F2F2F2;
 }
