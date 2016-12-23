@@ -54,14 +54,14 @@ function initialize(){
 
 		folderTitle.onclick = function(){
 			removeLight();
-			this.classList.add('lighted')
+			this.classList.add('lighted');
+			renderMid()
 		}
 	}
 	console.log(folderLists)
-}
-function addPath(list){
 
 }
+
 initialize();
 function removeLight(){
 	for( var i = 0; i < folderLists.length; i++){
@@ -90,18 +90,7 @@ function addTask(){
 			obj.date = inps[1].value;
 			obj.cont = txt.value;
 			console.log(obj)
-			var l = data.length;
-			//标题不能重复
-			if(data.length != 0){
-				for(var i = 0; i < l; i++){
-					console.log(data[i].title.indexOf(obj.title) >= 0 && data[i].date.indexOf(obj.date) >= 0)
-					console.log(data)
-					if(data[i].title==obj.title){
-						alert('标题重复');
-						return;
-					}
-				}
-			}
+			
 			//此语句一定要放在循环外面，不然会出错！！
 			data.push(obj)
 			console.log(data)
@@ -119,7 +108,7 @@ function addTask(){
 	}
 }
 
-function renderMid(){
+function renderMid(oTitle){
 
 	var disData = [];
 	var lightedFolder = lefBar.querySelector('.lighted');
@@ -127,10 +116,24 @@ function renderMid(){
 	//每次渲染先清空列表
 	centerBar.innerHTML = '';
 	for(var i = 0; i < data.length; i++){
+		//将被点击分类的路径的所有任务放到disData里作为展示
 		if(data[i].path.indexOf(lightedFolder.dataset.path) >= 0){
 			disData.push(data[i])
 		}
 	}
+
+	//相同标题时的处理方案
+	var allOldTitles = [];
+	for(var i = 0; i < disData.length - 1; i++){
+		allOldTitles.push(disData[i].title)
+	}
+	if(allOldTitles.includes(disData[disData.length-1].title)){
+		alert('标题重复');
+		data.pop();
+		renderMid();
+		return
+	}
+
 	if(!disData){
 		return;
 	}
@@ -167,20 +170,41 @@ function renderMid(){
 		centerBar.appendChild(oP1);
 		for(var t = 0; t < disTitle[i].length; t++){
 			var oP2 = document.createElement('p');
-			oP2.className = 'titles';
+			oP2.classList.add('titles');
 			oP2.textContent = disTitle[i][t];
 			//为mid的任务列表绑定数据
 			oP2.dataset.title = disTitle[i][t];
 			oP2.dataset.date = disDate[i];
+			//通过title添加对应cont数据
 			for(var p = 0; p < disData.length; p++){
 				if(disData[p].title == disTitle[i][t]){
 					oP2.dataset.cont = disData[p].cont
-				}
+				} 
 			}
 			
 			centerBar.appendChild(oP2);
 			initMidClick();
+			//触发新建节点的点击
 			oP2.click();
+		}
+	}
+
+	//若将checked属性加入到最初数据
+	var taskElems = document.getElementsByClassName('titles');
+	console.log(oTitle)
+	for(var i = 0; i < disData.length; i++){
+		if(disData[i].title == oTitle){
+			disData[i].checked = true;
+		}
+	}
+	//找到要添加checked的对应的elem
+	for(var i = 0; i < disData.length; i++){
+		if(disData[i].checked){
+			for(var t = 0; t < taskElems.length; t++){
+				if(taskElems[t].dataset.title == disData[i].title){
+					taskElems[t].classList.add('checked')
+				}
+			}
 		}
 	}
 	
@@ -208,4 +232,36 @@ function renderRig(elem){
 	disPanel.classList.remove('not-show');
 }
 
+//为右侧显示面板的右上角图标添加点击事件
+function rigFunc(){
+	var checkBtn = disPanel.getElementsByTagName('img')[0];
+	var editBtn = disPanel.getElementsByTagName('img')[1];
+	
+	checkBtn.onclick = function(){
+		var chosenTask = document.getElementsByClassName('chosen')[0];
+		chosenTask.classList.add('checked');
+		var oTitle = chosenTask.dataset.title;
+		console.log(oTitle)
+		renderMid(oTitle);
+	}
+	editBtn.onclick = function(){
+		var chosenTask = document.getElementsByClassName('chosen')[0];
+		editPanel.classList.remove('not-show');
+		disPanel.classList.add('not-show');
+		var inps = rigBar.getElementsByTagName('input');
+		var txt = rigBar.getElementsByTagName('textarea')[0];
+		inps[0].value = chosenTask.dataset.title;
+		inps[1].value = chosenTask.dataset.date;
+		txt.value = chosenTask.dataset.cont;
+	}
 }
+rigFunc()
+
+}
+
+
+
+/*常用方法：
+通过属性值找对象
+*/
+

@@ -188,3 +188,18 @@ header{
 .chosen{
 	background: #F2F2F2;
 }
+.cont-dis img{
+	position: absolute;
+}
+.cont-dis :nth-child(4){
+	right: 80px;
+	top: 10px;
+}
+.cont-dis :nth-child(5){
+	right: 30px;
+	top: 10px;
+}
+.checked{
+	font-weight: bold;
+	color: green;
+}
