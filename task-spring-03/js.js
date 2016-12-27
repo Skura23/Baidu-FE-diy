@@ -32,7 +32,7 @@ function addFolder(){
 	if(lightedFolder){
 		oSpan.className = 'file';
 		//为新增分类添加数据data-path
-		oSpan.dataset.path = lightedFolder.dataset.path + '/' + folderName;
+		oSpan.dataset.path = lightedFolder.dataset.path + folderName + '/';
 		oSpan.dataset.layer = 1;
 		lightedFolder.parentNode.appendChild(oUl);
 	}else {
@@ -45,7 +45,7 @@ addFolderBtn.onclick = addFolder;
 function initialize(){
 	var rootLists = lefBar.querySelector('.folder-list').children;
 	for( var i = 0; i < rootLists.length; i++){
-		rootLists[i].querySelector('span').dataset.path = rootLists[i].querySelector('span').textContent;
+		rootLists[i].querySelector('span').dataset.path = rootLists[i].querySelector('span').textContent + '/';
 		rootLists[i].querySelector('span').dataset.layer = 0;
 	}
 	//为每个li添加可高亮功能
@@ -85,7 +85,7 @@ function addTask(){
 			var lightedFolder = lefBar.querySelector('.lighted');
 			var inps = rigBar.getElementsByTagName('input');
 			var txt = rigBar.getElementsByTagName('textarea')[0];
-			obj.path = lightedFolder.dataset.path + '/' + inps[0].value;
+			obj.path = lightedFolder.dataset.path  + inps[0].value + '/';
 			obj.title = inps[0].value;
 			obj.date = inps[1].value;
 			obj.cont = txt.value;
@@ -108,8 +108,7 @@ function addTask(){
 	}
 }
 
-function renderMid(oTitle){
-
+function renderMid(oTitle, editCmd, midSortType){
 	var disData = [];
 	var lightedFolder = lefBar.querySelector('.lighted');
 	var centerBar = midBar.querySelector('.center-bar');
@@ -122,24 +121,58 @@ function renderMid(oTitle){
 		}
 	}
 
-	//相同标题时的处理方案
-	var allOldTitles = [];
-	for(var i = 0; i < disData.length - 1; i++){
-		allOldTitles.push(disData[i].title)
-	}
-	if(allOldTitles.includes(disData[disData.length-1].title)){
-		alert('标题重复');
-		data.pop();
-		renderMid();
-		return
-	}
+	//根据筛选类型筛选disData
+	if(midSortType == 'all'){
 
+	}else if(midSortType == 'yes'){
+		var yesData = [];
+		for(var i = 0; i < disData.length; i++){
+			if(disData[i].checked){
+				yesData.push(disData[i])
+			}
+		}
+		disData = yesData;
+	}else if(midSortType == 'not'){
+		var notData = [];
+		for(var i = 0; i < disData.length; i++){
+			if(!disData[i].checked){
+				notData.push(disData[i])
+			}
+		}
+		disData = notData;
+	}
+	
+	//相同标题时的处理方案
+	//点击编辑按钮时
+	if(editCmd){
+		for(var i = 0; i < data.length; i++){
+			if(data[i].title == data[editCmd[0]].title && i != editCmd[0]){
+				alert('标题重复');
+				data[editCmd[0]].title = editCmd[1]
+			}
+		}
+	}else{
+		//点击添加按钮时
+		//数据数组长度为1时无需检查
+		if(disData.length > 1){
+			var allOldTitles = [];
+			for(var i = 0; i < disData.length - 1; i++){
+				allOldTitles.push(disData[i].title)
+			}
+			if(allOldTitles.includes(disData[disData.length-1].title)){
+				alert('标题重复');
+				data.pop();
+				renderMid();
+				return
+			}
+		}
+	}
 	if(!disData){
 		return;
 	}
-	
 	var disDate = [];
 	var disTitle = [];
+
 	//获取查重后的日期
 	for(var i = 0; i < disData.length; i++){
 		if (!disDate.includes(disData[i].date)) {
@@ -189,9 +222,8 @@ function renderMid(oTitle){
 		}
 	}
 
-	//若将checked属性加入到最初数据
+	//将checked属性加入到最初数据
 	var taskElems = document.getElementsByClassName('titles');
-	console.log(oTitle)
 	for(var i = 0; i < disData.length; i++){
 		if(disData[i].title == oTitle){
 			disData[i].checked = true;
@@ -239,6 +271,7 @@ function rigFunc(){
 	
 	checkBtn.onclick = function(){
 		var chosenTask = document.getElementsByClassName('chosen')[0];
+		if(!chosenTask) return;
 		chosenTask.classList.add('checked');
 		var oTitle = chosenTask.dataset.title;
 		console.log(oTitle)
@@ -246,6 +279,7 @@ function rigFunc(){
 	}
 	editBtn.onclick = function(){
 		var chosenTask = document.getElementsByClassName('chosen')[0];
+		if(!chosenTask) return;
 		editPanel.classList.remove('not-show');
 		disPanel.classList.add('not-show');
 		var inps = rigBar.getElementsByTagName('input');
@@ -253,9 +287,59 @@ function rigFunc(){
 		inps[0].value = chosenTask.dataset.title;
 		inps[1].value = chosenTask.dataset.date;
 		txt.value = chosenTask.dataset.cont;
+		//确认按钮功能
+		confBtn.onclick = function(){
+			var t = 0;
+			for(var i = 0; i < data.length; i++){
+				if(data[i].title == chosenTask.dataset.title){
+					t = i;
+				}
+			}
+			var editCmd = [t, chosenTask.dataset.title];
+			var lightedFolder = lefBar.querySelector('.lighted');
+			var inps = rigBar.getElementsByTagName('input');
+			var txt = rigBar.getElementsByTagName('textarea')[0];
+			data[t].path = lightedFolder.dataset.path + inps[0].value + '/';
+			data[t].title = inps[0].value;
+			data[t].date = inps[1].value;
+			data[t].cont = txt.value;
+			console.log(t)
+			renderMid(null, editCmd);
+		}
 	}
 }
 rigFunc()
+
+function midSort(){
+	var btns = midBar.getElementsByTagName('span');
+	var allBtn = midBar.getElementsByTagName('span')[0];
+	var yesBtn = midBar.getElementsByTagName('span')[1];
+	var notBtn = midBar.getElementsByTagName('span')[2];
+	
+	var midSortType = '';
+	allBtn.onclick = function(){
+		var lightedFolder = lefBar.getElementsByClassName('lighted')[0];
+		initBtns(), this.classList.add('clicked');
+		lightedFolder && ( midSortType = 'all', renderMid( null, null, midSortType));
+	}
+	yesBtn.onclick = function(){
+		var lightedFolder = lefBar.getElementsByClassName('lighted')[0];
+		initBtns(), this.classList.add('clicked');
+		lightedFolder && ( midSortType = 'yes', renderMid( null, null,midSortType));
+	}
+	notBtn.onclick = function(){
+		var lightedFolder = lefBar.getElementsByClassName('lighted')[0];
+		initBtns(), this.classList.add('clicked');
+		lightedFolder && ( midSortType = 'not', renderMid( null, null,midSortType));
+	}
+	function initBtns(){
+		for(var i = 0; i < btns.length; i++){
+			btns[i].classList.remove('clicked');
+		}
+	}
+}
+midSort()
+
 
 }
 

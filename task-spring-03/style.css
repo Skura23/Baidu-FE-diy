@@ -76,6 +76,7 @@ header{
 	padding: 0 5px;
 	position: absolute;
 	top: 10px;
+	cursor: pointer;
 }
 .top-bar span:nth-child(1){
 	left: 20px;
@@ -86,7 +87,7 @@ header{
 .top-bar span:nth-child(3){
 	left: 135px;
 }
-.top-bar span:hover{
+.top-bar .clicked{
 	background: #fff;
 	border: 1px solid #D5D5D5;
 }
@@ -190,6 +191,7 @@ header{
 }
 .cont-dis img{
 	position: absolute;
+	cursor: pointer;
 }
 .cont-dis :nth-child(4){
 	right: 80px;
