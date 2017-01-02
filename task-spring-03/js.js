@@ -1,3 +1,5 @@
+/*by Skura22*/
+
 window.onload = function(){
 var lefBar = document.querySelector('.lef-bar');
 var midBar = document.querySelector('.mid-bar');
@@ -340,6 +342,9 @@ function midSort(){
 }
 midSort()
 
+/*function delFunc (){
+
+}*/
 
 }
 
