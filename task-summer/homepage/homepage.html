@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />     
+	<meta name="apple-mobile-web-app-capable" content="yes" />    
+	<meta name="format-detection" content="telephone=no" />   
+	<title>Document</title>
+	<script src="hammer.js"></script>
+	<style type="text/css">
+	*{
+		margin: 0;
+		padding: 0;
+	}
+	html,body{width: 100%;height:100%;}
+	ul{
+		list-style: none;
+	}
+	.wrapper{
+		height:100%;
+		overflow: hidden;
+		position: relative;
+	}
+	.profile{
+		width: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	.profile>div{
+		width: 100%;
+		height: 100%;
+	}
+	.avatar{
+		background: green;
+	}
+	.about{
+		background: yellow;
+	}
+	.skills{
+		background: gray;
+	}
+	.gallery{
+		background: red;
+	}
+	.home{
+		background: blue;
+	}
+	.sideMarks{
+		position: absolute;
+		right: 20px;
+		top: 50%;
+		margin-top: -50px;
+	}
+	.sideMarks li{
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: #fff;
+		margin-top: 10px;
+	}
+	.sideMarks .current{
+		background:gray;
+	}
+	</style>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="profile">
+			<div class="avatar">
+				<p>姓名：张雪祥</p>
+				<p>Name: Skura</p>
+			</div>
+			<div class="about">
+				<p>About</p>
+			</div>
+			<div class="skills"></div>
+			<div class="gallery"></div>
+			<div class="home"></div>
+		</div>
+	</div>
+<script>
+var winH = window.document.body.clientHeight;
+var oPro = document.querySelector('.profile');
+var proDivs = oPro.querySelectorAll('div');
+
+window.onresize = function(){
+	resizeHeight();
+}
+//div高度随窗口变化自适应
+function resizeHeight(){
+	winH = window.document.body.clientHeight;
+	for(var i = 0; i < proDivs.length; i++){
+		proDivs[i].style.height = winH + 'px'
+	}
+}
+//初始化侧边标记
+function initMarks(){
+	var oUl = document.createElement('ul');
+	oUl.className = 'sideMarks';
+	var aLi = [];
+	for(var i = 0; i < proDivs.length; i++){
+		var oLi = document.createElement('li');
+		oLi.index = i;
+		aLi.push(oLi);
+	}
+	document.body.appendChild(oUl);
+	for(var i = 0; i < aLi.length; i++){
+		oUl.appendChild(aLi[i])
+	}
+	
+}
+
+window.onload = function(){
+	var animated = false;
+	var index = t = 0;
+	var oPro = document.querySelector('.profile');
+	var proDiv = oPro.querySelector('div');
+	//窗口载入时，设定div初始宽度
+	resizeHeight();
+	initMarks();
+
+	var oUl = document.querySelector('.sideMarks');
+	//第一个li为被选中状态
+	oUl.querySelector('li').classList.add('current');
+	var hammertime = new Hammer(oPro);
+	hammertime.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL });
+	hammertime.on("swipeup", function (e) {
+  	var winH = window.document.body.clientHeight;
+  	var originalTop = oPro.offsetTop;
+  	if(originalTop == proDiv.offsetHeight - oPro.offsetHeight || animated){
+  		return;
+  	}
+  	index ++;
+  	markMove();
+  	startMove(originalTop - winH)
+
+  });
+  hammertime.on("swipedown", function (e) {
+  	console.log(window.document.body.clientHeight)
+  	var winH = window.document.body.clientHeight;
+  	var originalTop = oPro.offsetTop;
+  	if(originalTop == 0 || animated){
+  		return;
+  	}
+  	index --;
+  	markMove();
+  	startMove(originalTop + winH)
+  });
+  console.log(winH)
+  function startMove(iTarget){
+  	clearInterval(t);
+  	t = setInterval(
+  		function(){
+  			doMove(iTarget)
+  		}, 20
+  	)
+  }
+  function doMove(iTarget){
+  	console.log(iTarget);
+  	animated = true;
+  	var curTop = oPro.offsetTop;
+  	var iSpeed = (iTarget - curTop)/10;
+  	iSpeed = iSpeed > 0 ? Math.ceil(iSpeed) : Math.floor(iSpeed);
+  	curTop == iTarget ?( clearInterval(t),animated = false) : oPro.style.top = curTop + iSpeed + 'px';
+  }
+  function markMove(){
+  	var aLi = oUl.querySelectorAll('li');
+  	for(var i = 0; i < aLi.length; i++){
+  		//先清除所有current格式
+  		aLi[i].classList.remove('current')
+  		if(aLi[i].index == index){
+  			aLi[i].classList.add('current')
+  		}
+  	}
+  }
+}    
+</script>
+</body>
+
+</html>
