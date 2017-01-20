@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />     
+	<meta name="apple-mobile-web-app-capable" content="yes" />    
+	<meta name="format-detection" content="telephone=no" />   
+	<title>MyPage</title>
+	<script src="hammer.js"></script>
+	<style type="text/css">
+	*{
+		margin: 0;
+		padding: 0;
+	}
+	a{
+		text-decoration: none;
+	}
+	html,body{width: 100%;height:100%;}
+	ul{
+		list-style: none;
+	}
+	.wrapper{
+		height:100%;
+		overflow: hidden;
+		position: relative;
+	}
+	.profile{
+		width: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	.profile>div{
+		position: relative;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(10deg, #ccd381, #6979b2);
+	}
+	.avatar{
+		
+	}
+	.avatar p:nth-child(2){
+		font-size: 20px;
+		position: absolute;
+		left: 50%;
+		top: 60%;
+		margin-left: -60px;
+	}
+	.avatar p:nth-child(3){
+		font-size: 20px;
+		position: absolute;
+		left: 50%;
+		top: 67%;
+		margin-left: -60px;
+	}
+	.about ul{
+		position: absolute;
+		margin-left: 20px;
+		font-size: 15px;
+		width: 83%;
+		top: 35%;
+	}
+	.about ul li:before{
+		content: '';
+		display: inline-block;
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: black;
+		margin-right: 10px;
+		
+	}
+	.skills{
+		background: gray;
+	}
+	.skills ul{
+		position: absolute;
+		margin-left: -50px;
+		font-size: 15px;
+		top: 40%;
+		left: 50%;
+	}
+	.skills ul li {
+		height: 18px;
+		width: 0;
+		border-radius: 8px;
+		margin-top: 25px;
+	}
+	.skills ul li span{
+		display: block;
+		margin-left: -80px;
+		font-weight: bold;
+	}
+	.skills ul li:nth-child(1){
+		background: green;
+	}
+	.skills ul li:nth-child(2){
+		background: #8c3939;
+	}
+	.skills ul li:nth-child(3){
+		background: yellow;
+	}
+	.skills ul li:nth-child(4){
+		background: blue;
+	}
+	.skills ul li:nth-child(5){
+		background: gray;
+	}
+	.gallery{
+		background: red;
+	}
+	.gallery ul{
+		position: absolute;
+		margin-left: -70px;
+		font-size: 15px;
+		top: 40%;
+		left: 50%;
+	}
+	.gallery li{
+		width: 120px;
+		height: 25px;
+		line-height: 25px;
+		border-radius: 8px;
+		margin-top: 25px;
+		background: #2b7ca5;
+		text-indent: 10px;
+		font-weight: bold;
+	}
+	.gallery li a{
+		color: #fff;
+	}
+	.home{
+		background: blue;
+	}
+	.sideMarks{
+		position: absolute;
+		z-index: 2;
+		right: 20px;
+		top: 50%;
+		margin-top: -50px;
+	}
+	.sideMarks li{
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: #fff;
+		margin-top: 10px;
+	}
+	.sideMarks .current{
+		background:gray;
+	}
+	.cir-bg{
+		position: absolute;
+		width: 110px;
+		height: 110px;
+		border-radius: 50%;
+		background: #4bafdd;
+		margin-left: -60px;
+		top: 10%;
+		left: 50%;
+		font-size: 20px;
+		font-weight: bold;
+		text-align: center;
+		line-height: 110px;
+	}
+	.cir-ava{
+		top: 15%;
+		border:5px solid #31e0d4;
+		width: 150px;
+		height: 150px;
+		margin-left: -80px;
+		background:  url(12.png) #fff no-repeat 12px 4px;
+		background-size: 90%;
+	}
+	
+	/* 毛玻璃效果封面 */
+	.blured{	
+		filter: blur(8px); 
+	}
+	.enter-btn{
+		position: absolute;
+		z-index: 1;
+		height: 28px;
+		line-height: 25px;
+		text-align: center;
+		color: #fff;
+		width: 70px;
+		border-radius: 10px;
+		border: 3px solid #fff;
+		cursor: pointer;
+		left: 50%;
+		top: 80%;
+		margin-left: -35px;
+		font-size: 20px;
+	}
+	.blank-mask{
+		z-index: 2;
+		position: absolute;
+		width: 100%;
+		height: 100%;
+	}
+	</style>
+</head>
+<body>
+	<div class="enter-btn">Enter</div>
+	<div class="wrapper">
+		<div class="blank-mask">
+		</div>
+		<div class="profile">
+			<div class="avatar">
+				<div class="cir-bg cir-ava"></div>
+				<p>姓名：张雪祥</p>
+				<p>Name: Skura</p>
+			</div>
+			<div class="about">
+				<div class="cir-bg">About</div>
+				<ul>
+					<li>可用HTML+CSS+jQuery制作静态页面，可使用jQuery添加常见的的网页效果 </li>
+					<li>熟悉原生js，可使用原生js实现常见需求</li>
+					<li>了解js面向对象原理，可用OOP方法编写程序</li>
+					<li>了解react框架，熟悉react环境搭建，可以使用react实现常见需求</li>
+					<li>了解H5移动端页面的制作编写，能制作H5移动端页面和小游戏，熟悉响应式布局</li>
+					<li>了解PHP语法+基础的MySql，可以写简单的动态页面</li>
+				</ul>
+			</div>
+			<div class="skills">
+				<div class="cir-bg">Skills</div>
+				<ul>
+					<li><span>Javascript</span></li>
+					<li><span>Jquery</span></li>
+					<li><span>CSS</span></li>
+					<li><span>React</span></li>
+					<li><span>PHP</span></li>
+				</ul>
+			</div>
+			<div class="gallery">
+				<div class="cir-bg">Gallery</div>
+				<ul>
+					<li><a href="https://skura23.github.io/raw-js-works/">原生JS作品</a></li>
+					<li><a href="https://skura23.github.io/nghome/">网页制作作品</a></li>
+				</ul>
+			</div>
+			<!-- <div class="home">
+				<div class="cir-bg">Home</div>
+				
+			</div> -->
+		</div>
+	</div>
+<script>
+var winH = window.document.body.clientHeight;
+var oPro = document.querySelector('.profile');
+var enterBtn = document.querySelector('.enter-btn');
+var oMask = document.querySelector('.blank-mask');
+//注意这里用的是children
+var proDivs = oPro.children;
+
+window.onresize = function(){
+	resizeHeight();
+}
+//div高度随窗口变化自适应
+function resizeHeight(){
+	winH = window.document.body.clientHeight;
+	for(var i = 0; i < proDivs.length; i++){
+		proDivs[i].style.height = winH + 'px'
+	}
+}
+//初始化侧边标记
+function initMarks(){
+	var oWra = document.querySelector('.wrapper');
+	var oUl = document.createElement('ul');
+	oUl.className = 'sideMarks';
+	var aLi = [];
+	for(var i = 0; i < proDivs.length; i++){
+		var oLi = document.createElement('li');
+		oLi.index = i;
+		aLi.push(oLi);
+	}
+	document.body.appendChild(oUl);
+	for(var i = 0; i < aLi.length; i++){
+		oUl.appendChild(aLi[i])
+	}
+}
+
+window.onload = function(){
+	var enterBtn = document.querySelector('.enter-btn');
+	var oMask = document.querySelector('.blank-mask');
+	var oWra = document.querySelector('.wrapper');
+	var animated = false;
+	var index = t = t2 = 0;
+	var oPro = document.querySelector('.profile');
+	var proDiv = oPro.querySelector('div');
+	//窗口载入时，设定div初始宽度
+	resizeHeight();
+	
+
+	//初始化遮罩层及btn功能
+	oWra.classList.add('blured');
+	enterBtn.onclick = function(){
+  	this.style.display = 'none';
+  	oMask.style.display = 'none';
+  	oWra.classList.remove('blured');
+  	initMarks();
+  	var oUl = document.querySelector('.sideMarks');
+		//第一个li为被选中状态
+		oUl.querySelector('li').classList.add('current');
+  }
+	
+	var hammertime = new Hammer(oPro);
+	hammertime.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL });
+	hammertime.on("swipeup", function (e) {
+  	var winH = window.document.body.clientHeight;
+  	var originalTop = oPro.offsetTop;
+  	if(originalTop == proDiv.offsetHeight - oPro.offsetHeight || animated){
+  		return;
+  	}
+  	index ++;
+  	markMove();
+  	startMove(originalTop - winH)
+  	
+  });
+  hammertime.on("swipedown", function (e) {
+  	console.log(window.document.body.clientHeight)
+  	var winH = window.document.body.clientHeight;
+  	var originalTop = oPro.offsetTop;
+  	if(originalTop == 0 || animated){
+  		return;
+  	}
+  	index --;
+  	markMove();
+  	startMove(originalTop + winH)
+  });
+  console.log(winH)
+  function startMove(iTarget){
+  	clearInterval(t);
+  	t = setInterval(
+  		function(){
+  			doMove(iTarget)
+  		}, 20
+  	)
+  }
+
+  function doMove(iTarget){
+  	console.log(iTarget);
+  	animated = true;
+  	var curTop = oPro.offsetTop;
+  	var iSpeed = (iTarget - curTop)/10;
+  	iSpeed = iSpeed > 0 ? Math.ceil(iSpeed) : Math.floor(iSpeed);
+  	curTop == iTarget ?( clearInterval(t),animated = false) : oPro.style.top = curTop + iSpeed + 'px';
+  	//动画结束时触发bar动画
+  	(!animated && index == 2) && showBar();
+  }
+  function markMove(){
+  	var oUl = document.querySelector('.sideMarks');
+  	var aLi = oUl.querySelectorAll('li');
+  	for(var i = 0; i < aLi.length; i++){
+  		//先清除所有current格式
+  		aLi[i].classList.remove('current')
+  		if(aLi[i].index == index){
+  			aLi[i].classList.add('current')
+  		}
+  	}
+  }
+
+  //显示skill条
+  function showBar(){
+  	
+  	clearInterval(t2);
+  	t2 = setInterval(
+  		doShow, 70
+  	)
+  }
+  function doShow(){
+  	var aLi = document.getElementsByClassName('skills')[0].getElementsByTagName('li');
+		for(var i = 0; i < aLi.length; i++){
+			var curWidth = aLi[i].offsetWidth;
+			var iTarget = 0;
+			switch (i)
+			{
+			case 0:
+			  iTarget=200;
+			  break;
+			case 1:
+			  iTarget=170;
+			  break;
+			case 2:
+			  iTarget=150;
+			  break;
+			case 3:
+			  iTarget=80;
+			  break;
+			case 4:
+			  iTarget=60;
+			  break;
+			}
+	  	var iSpeed = (iTarget - curWidth)/10;
+	  	iSpeed = iSpeed > 0 ? Math.ceil(iSpeed) : Math.floor(iSpeed);
+	  	curWidth == iTarget ?( clearInterval(t2)) : aLi[i].style.width = curWidth + iSpeed + 'px';
+		}
+
+  }
+}    
+</script>
+</body>
+
+</html>
